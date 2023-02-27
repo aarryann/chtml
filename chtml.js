@@ -3,6 +3,17 @@ const BLOCK_START = "<!--{#";
 const BLOCK_END = "<!--{/";
 
 function parseTemplatedBlock(codeBlock, htmlArr, context){
+  const blockArr = codeBlock.split(BLOCK_END);
+  // if blockArr length is 1, it mmeans the block is not ending in this statement
+  // which means its  nested block. For nested block parse next blockstatement
+  if (blockArr.length === 1){
+    return parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
+  } else {
+    // if not nested block, parse end value
+    const parsed = parseFieldValue(cleanBlockStart(blockArr.shift()));
+    return parsed + cleanBlockEnd(blokArr.join(BLOCK_END);
+  }
+ 
   return parseFieldValue(codeBlock, context);
   
 }
