@@ -1,45 +1,9 @@
 const fs = require("fs");
-const BLOCK_START = "<!--{#";
-const BLOCK_END = "<!--{/";
-
-function parseTemplatedBlock(codeBlock, htmlArr, context){
-  return parseFieldValue(codeBlock, context);
-  
-}
-
-function parseFieldValue(html, context){
-  html = html.replace(/<!--\{(.+?)\}-->/g, (match, placeholder) => {
-    //console.log(`${match} ++++ ${placeholder} ++++ `);
-    // Split the placeholder into an array of keys (for nested values)
-    const keys = placeholder.split(".");
-    // Start with the top-level context object
-    let value = context;
-    // Traverse down the keys to get the final value
-    keys.forEach((key) => {
-      value = value[key];
-    });
-    // If the value is a function, execute it and return the result
-    if (typeof value === "function") {
-      value = value();
-    }
-    // Return the final value as the replacement for the placeholder
-    return value;
-  });
-}
 
 function render(template, context) {
   // Replace each placeholder with its value from the context object
+  console.log(template);
   let html = template;
-
-  const htmlArr = html.split(BLOCK_START);
-  while (htmlArr.length > 0){
-    const blockStatement = htmlArr.shift();
-    const blockArr = blockStatement.split(BLOCK_END);
-    // if blockArr length is 1, it mmeans the block is not ending in this statement
-    // which means its  nested block. For nested block parse next blockstatement
-    if (blockArr.length === 1){
-    }
-  }
 
   // Replace each #each block with its rendered contents
   html = html.replace(
