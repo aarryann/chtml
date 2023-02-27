@@ -7,7 +7,7 @@ function parseTemplatedBlock(codeBlock, htmlArr, context){
   // if blockArr length is 1, it mmeans the block is not ending in this statement
   // which means its  nested block. For nested block parse next blockstatement
   if (blockArr.length === 1){
-    return parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
+    codeBlock += parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
   } else {
     // if not nested block, parse end value
     const parsed = parseFieldValue(cleanBlockStart(blockArr.shift()));
