@@ -27,17 +27,30 @@ function parseFieldValue(html, context){
   });
 }
 
+function cleanBlockStart(block){
+  return block
+}
+
+function cleanBlockEnd(block){
+  return block
+}
+
 function render(template, context) {
   // Replace each placeholder with its value from the context object
   let html = template;
 
   const htmlArr = html.split(BLOCK_START);
   while (htmlArr.length > 0){
-    const blockStatement = htmlArr.shift();
+    const blockStatement = cleanBlockStart(htmlArr.shift());
     const blockArr = blockStatement.split(BLOCK_END);
     // if blockArr length is 1, it mmeans the block is not ending in this statement
     // which means its  nested block. For nested block parse next blockstatement
     if (blockArr.length === 1){
+      parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
+    } else {
+      // if not nested block, parse end value
+      const parsed = parseFieldValue(blockArr.shift());
+      return parsed + cleanBlockEnd(blokArr.join(BLOCK_END);
     }
   }
 
