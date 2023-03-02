@@ -1,8 +1,10 @@
 const express = require('express');
+const { render } = require('./chtml');
 const fs = require('fs');
 const app = express();
 
 // Set the view engine to use the HTML commenting template engine
+/*
 app.engine('html', (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
     if (err) return callback(err);
@@ -10,12 +12,15 @@ app.engine('html', (filePath, options, callback) => {
     return callback(null, rendered);
   });
 });
-app.set('views', './views');
+*/
+
+//app.set('views', './public');
 app.set('view engine', 'html');
 
 // Serve static HTML files using the HTML commenting template engine
 app.use(express.static('public'));
 
+/*
 // Route for the home page
 app.get('/', (req, res) => {
   const data = {
@@ -46,6 +51,7 @@ app.get('/about', (req, res) => {
   };
   res.render('about', data);
 });
+*/
 
 // Start the server
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(5000, () => console.log('Server running on port 5000'));
