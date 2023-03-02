@@ -1,11 +1,12 @@
-const express = require('express');
-const { render } = require('./chtml');
-const fs = require('fs');
+const express = require("express");
+const chtml = require("./chtml");
+const fs = require("fs");
 const app = express();
 
 // Set the view engine to use the HTML commenting template engine
 /*
-app.engine('html', (filePath, options, callback) => {
+app.engine("html", (filePath, options, callback) => {
+  console.log("hit");
   fs.readFile(filePath, (err, content) => {
     if (err) return callback(err);
     const rendered = render(content.toString(), options);
@@ -13,45 +14,93 @@ app.engine('html', (filePath, options, callback) => {
   });
 });
 */
-
-//app.set('views', './public');
-app.set('view engine', 'html');
+app.set("views", "./public");
+app.set("view engine", "html");
 
 // Serve static HTML files using the HTML commenting template engine
-app.use(express.static('public'));
+//app.use(express.static("public"));
 
-/*
-// Route for the home page
-app.get('/', (req, res) => {
-  const data = {
-    title: 'Home Page',
-    showHeader: true,
-    header: 'Welcome to my website!',
-    showSubheader: false,
-    items: ['Item 1', 'Item 2', 'Item 3'],
-    itemsLength: function() {
-      return `There are ${this.items.length} items in the list`;
+app.get("/", (req, res) => {
+  const templatePath = "./public/index.html";
+
+  fs.readFile(templatePath, "utf-8", (err, html) => {
+    if (err) {
+      res.status(500).send("Error loading template");
+      return;
     }
+
+    const context = {
+      title: "My Website",
+      showHeader: () => true,
+      header: "Welcome to My Website",
+      showSubheader: () => false,
+      subheader: "Check out these cool items:",
+      items: ["Item 1", "Item 2", "Item 3"],
+      itemsLength: () => `There are ${context.items.length} items`,
+    };
+
+    const renderedHtml = chtml.render(html, context);
+
+    res.send(renderedHtml);
+  });
+});
+
+app.get("/check1", (req, res) => {
+  const templatePath = "./public/index.html";
+
+  fs.readFile(templatePath, "utf-8", (err, data) => {
+    if (err) {
+      res.status(500).send("Error loading template");
+      return;
+    }
+
+    const template = chtml.compile(data);
+    const context = {
+      title: "My Website",
+      showHeader: true,
+      header: "Welcome to My Website",
+      showSubheader: true,
+      subheader: "Check out these cool items:",
+      items: ["Item 1", "Item 2", "Item 3"],
+      itemsLength: `<!--{${() => `There are ${this.items.length} items`}-->`,
+    };
+
+    const renderedHtml = template(context);
+
+    res.send(renderedHtml);
+  });
+});
+
+// Route for the home page
+app.get("/check", (req, res) => {
+  const data = {
+    title: "Home Page",
+    showHeader: true,
+    header: "Welcome to my website!",
+    showSubheader: false,
+    items: ["Item 1", "Item 2", "Item 3"],
+    itemsLength: function () {
+      return `There are ${this.items.length} items in the list`;
+    },
   };
-  res.render('index', data);
+  res.render("index", data);
 });
 
 // Route for the about page
-app.get('/about', (req, res) => {
+app.get("/about", (req, res) => {
   const data = {
-    title: 'About Us',
+    title: "About Us",
     showHeader: true,
-    header: 'About Us',
+    header: "About Us",
     showSubheader: true,
-    subheader: 'Learn more about us',
-    items: ['Our mission', 'Our team', 'Our history'],
-    itemsLength: function() {
+    subheader: "Learn more about us",
+    items: ["Our mission", "Our team", "Our history"],
+    itemsLength: function () {
       return `There are ${this.items.length} items in the list`;
-    }
+    },
   };
-  res.render('about', data);
+  res.render("about", data);
 });
-*/
 
 // Start the server
-app.listen(5000, () => console.log('Server running on port 5000'));
+app.listen(3000, () => console.log("Server running on port 3000"));
