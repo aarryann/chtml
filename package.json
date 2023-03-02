@@ -1,0 +1,9 @@
+{
+  "name": "html-comment-template-engine-example",
+  "version": "1.0.0",
+  "description": "Example of using HTML commenting template engine with Express.js server",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security"
+  }
+}
