@@ -2,22 +2,6 @@ const fs = require("fs");
 const BLOCK_START = "<!--{#";
 const BLOCK_END = "<!--{/";
 
-function parseTemplatedBlock(codeBlock, htmlArr, context){
-  const blockArr = codeBlock.split(BLOCK_END);
-  // if blockArr length is 1, it mmeans the block is not ending in this statement
-  // which means its  nested block. For nested block parse next blockstatement
-  if (blockArr.length === 1){
-    codeBlock += parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
-  } else {
-    // if not nested block, parse end value
-    const parsed = parseFieldValue(cleanBlockStart(blockArr.shift()));
-    return parsed + cleanBlockEnd(blokArr.join(BLOCK_END);
-  }
- 
-  return parseFieldValue(codeBlock, context);
-  
-}
-
 function parseFieldValue(html, context){
   html = html.replace(/<!--\{(.+?)\}-->/g, (match, placeholder) => {
     //console.log(`${match} ++++ ${placeholder} ++++ `);
@@ -46,28 +30,43 @@ function cleanBlockEnd(block){
   return block
 }
 
+function parseBlock(codeBlock, htmlArr, context){
+  // if pure html return
+  if (codeBlock.startsWith("<")){
+    return codeBlock;
+  }
+  const blockArr = codeBlock.split(BLOCK_END);
+  // if blockArr length is 1 or block end is not found, it either the block is not complete yet, i.e there is a nested bloc after this codeblock
+  if (blockArr.length === 1){
+    codeBlock += parseBlock(htmlArr.shift(),htmlArr, context);
+  } else {
+    // if not nested block, parse end value
+    return parse( codeBlock );
+  }
+}
+
 function render(template, context) {
   // Replace each placeholder with its value from the context object
   let html = template;
+  const compiledArr = [];
 
   const htmlArr = html.split(BLOCK_START);
+  // The templated content if any will be from the second row
+  if (htmlArr.length > 0) compiledArr.push(htmlArr.shift()); 
+
+  // Now parse any outer code blocka.The contol will return back only when one entire outer block is parsed, including all its nested inner blocks.
   while (htmlArr.length > 0){
-    const blockStatement = cleanBlockStart(htmlArr.shift());
-    const blockArr = blockStatement.split(BLOCK_END);
-    // if blockArr length is 1, it mmeans the block is not ending in this statement
-    // which means its  nested block. For nested block parse next blockstatement
-    if (blockArr.length === 1){
-      parseTemplatedBlock(cleanBlockStart(htmlArr.shift()), context);
-    } else {
-      // if not nested block, parse end value
-      const parsed = parseFieldValue(blockArr.shift());
-      return parsed + cleanBlockEnd(blokArr.join(BLOCK_END);
-    }
+    compiledArr.push( parseBlock(htmlArr.shift(), htmlArr, context) );
   }
+}
+
+function parse(template, context) {
+  // Replace each placeholder with its value from the context object
+  let html = template;
 
   // Replace each #each block with its rendered contents
   html = html.replace(
-    /<!--\{#each (.+?)\}-->([\s\S]*?)<!--\{\/each\}-->/g,
+    /each (.+?)\}-->([\s\S]*?)<!--\{\/each\}-->/g,
     (match, arrayKey, itemTemplate) => {
       // Get the array to iterate over from the context object
       const array = context[arrayKey];
@@ -86,7 +85,7 @@ function render(template, context) {
   // Replace each #if block with its rendered contents (if the condition is true) or an empty string (if the condition is false)
   //console.log(html);
   html = html.replace(
-    /<!--\{#if (.+?)\}-->([\s\S]*?)<!--\{\/if\}-->/g,
+    /if (.+?)\}-->([\s\S]*?)<!--\{\/if\}-->/g,
     (match, condition, content) => {
       //console.log(`if ${content}`);
       //console.log(`if ${condition} ${content}`);
