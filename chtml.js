@@ -3,20 +3,6 @@ const BLOCK_START = "<!--{#";
 const PLACEHOLDER_START = "<!--{";
 const BLOCK_END = "<!--{/";
 
-function parseBlock(codeBlock, htmlArr, context) {
-  // if pure html return
-  if (codeBlock.startsWith("<")) {
-    return codeBlock;
-  }
-  const blockArr = codeBlock.split(BLOCK_END);
-  // if blockArr length is 1 or block end is not found, it either the block is not complete yet, i.e there is a nested bloc after this codeblock
-  if (blockArr.length === 1) {
-    codeBlock += parseBlock(htmlArr.shift(), htmlArr, context);
-  }
-  // if not nested block, parse end value
-  return parse(codeBlock, context);
-}
-
 function render(html, context) {
   // Replace each placeholder with its value from the context object
   const compiledArr = [];
@@ -33,9 +19,32 @@ function render(html, context) {
   return compiledArr.join("");
 }
 
+function parseBlock(codeBlock, htmlArr, context) {
+  // if pure html return
+  if (codeBlock.startsWith("<")) {
+    return codeBlock;
+  }
+  const blockArr = codeBlock.split(BLOCK_END);
+  // if blockArr length is 1 or block end is not found, it either the block is not complete yet, i.e there is a nested bloc after this codeblock
+  if (blockArr.length === 1) {
+    codeBlock += parseBlock(htmlArr.shift(), htmlArr, context);
+  }
+  // if not nested block, parse end value
+  return parse(codeBlock, context);
+}
+
 function parse(template, context) {
   // Replace each placeholder with its value from the context object
   let html = template;
+
+  // Replace each #call block with its rendered contents from execution of called function
+  html = html.replace(
+    /call (.+?)\}-->([\s\S]*?)<!--\{\/call\}-->/g,
+    (match, callee, fragment) => {
+      // Invoke the function, pass the enclosed HTML as argument and render the returned value
+      return context[callee](fragment);
+    }
+  );
 
   // Replace each #each block with its rendered contents
   html = html.replace(
