@@ -10,7 +10,7 @@ function render(html, context) {
   const htmlArr = html.split(BLOCK_START);
   // The templated content if any will be from the second row
   if (htmlArr.length > 0) {
-    compiledArr.push(htmlArr.shift());
+    compiledArr.push( parse( htmlArr.shift(), context ) );
   }
   // Now parse any outer code blocka.The contol will return back only when one entire outer block is parsed, including all its nested inner blocks.
   while (htmlArr.length > 0) {
