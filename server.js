@@ -32,9 +32,11 @@ app.get("/", (req, res) => {
     const context = {
       title: "My Website",
       showHeader: () => true,
-      header: "Welcome to My Website",
-      showSubheader: () => false,
-      subheader: "Check out these cool items:",
+      header: "Welcome to My Website-1",
+      showSubheader: () => true,
+      subheader: "Check out these cool items-2:",
+      showSubSubheader: () => true,
+      subsubheader: "And check these out too-3:",
       items: ["Item 1", "Item 2", "Item 3"],
       itemsLength: () => `There are ${context.items.length} items`,
     };
@@ -75,9 +77,10 @@ app.get("/check1", (req, res) => {
 app.get("/check", (req, res) => {
   const data = {
     title: "Home Page",
-    showHeader: true,
+    showHeader: () => true,
     header: "Welcome to my website!",
-    showSubheader: false,
+    showSubheader: () => true,
+    subheader: "Check oout these items!",
     items: ["Item 1", "Item 2", "Item 3"],
     itemsLength: function () {
       return `There are ${this.items.length} items in the list`;

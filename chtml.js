@@ -1,63 +1,36 @@
 const fs = require("fs");
 const BLOCK_START = "<!--{#";
+const PLACEHOLDER_START = "<!--{";
 const BLOCK_END = "<!--{/";
 
-function parseFieldValue(html, context){
-  html = html.replace(/<!--\{(.+?)\}-->/g, (match, placeholder) => {
-    //console.log(`${match} ++++ ${placeholder} ++++ `);
-    // Split the placeholder into an array of keys (for nested values)
-    const keys = placeholder.split(".");
-    // Start with the top-level context object
-    let value = context;
-    // Traverse down the keys to get the final value
-    keys.forEach((key) => {
-      value = value[key];
-    });
-    // If the value is a function, execute it and return the result
-    if (typeof value === "function") {
-      value = value();
-    }
-    // Return the final value as the replacement for the placeholder
-    return value;
-  });
-}
-
-function cleanBlockStart(block){
-  return block
-}
-
-function cleanBlockEnd(block){
-  return block
-}
-
-function parseBlock(codeBlock, htmlArr, context){
+function parseBlock(codeBlock, htmlArr, context) {
   // if pure html return
-  if (codeBlock.startsWith("<")){
+  if (codeBlock.startsWith("<")) {
     return codeBlock;
   }
   const blockArr = codeBlock.split(BLOCK_END);
   // if blockArr length is 1 or block end is not found, it either the block is not complete yet, i.e there is a nested bloc after this codeblock
-  if (blockArr.length === 1){
-    codeBlock += parseBlock(htmlArr.shift(),htmlArr, context);
-  } else {
-    // if not nested block, parse end value
-    return parse( codeBlock );
+  if (blockArr.length === 1) {
+    codeBlock += parseBlock(htmlArr.shift(), htmlArr, context);
   }
+  // if not nested block, parse end value
+  return parse(codeBlock, context);
 }
 
-function render(template, context) {
+function render(html, context) {
   // Replace each placeholder with its value from the context object
-  let html = template;
   const compiledArr = [];
 
   const htmlArr = html.split(BLOCK_START);
   // The templated content if any will be from the second row
-  if (htmlArr.length > 0) compiledArr.push(htmlArr.shift()); 
-
-  // Now parse any outer code blocka.The contol will return back only when one entire outer block is parsed, including all its nested inner blocks.
-  while (htmlArr.length > 0){
-    compiledArr.push( parseBlock(htmlArr.shift(), htmlArr, context) );
+  if (htmlArr.length > 0) {
+    compiledArr.push(htmlArr.shift());
   }
+  // Now parse any outer code blocka.The contol will return back only when one entire outer block is parsed, including all its nested inner blocks.
+  while (htmlArr.length > 0) {
+    compiledArr.push(parseBlock(htmlArr.shift(), htmlArr, context));
+  }
+  return compiledArr.join("");
 }
 
 function parse(template, context) {
@@ -75,7 +48,7 @@ function parse(template, context) {
         // Create a new context object for each item
         const itemContext = Object.assign({}, context, { this: item });
         // Render the item template using the item context object
-        return render(itemTemplate, itemContext);
+        return parse(itemTemplate, itemContext);
       });
       // Join the rendered items into a single string and return it as the replacement for the #each block
       return renderedItems.join("");
@@ -83,28 +56,21 @@ function parse(template, context) {
   );
 
   // Replace each #if block with its rendered contents (if the condition is true) or an empty string (if the condition is false)
-  //console.log(html);
   html = html.replace(
     /if (.+?)\}-->([\s\S]*?)<!--\{\/if\}-->/g,
     (match, condition, content) => {
-      //console.log(`if ${content}`);
-      //console.log(`if ${condition} ${content}`);
       // Evaluate the condition as a JavaScript expression using the context object
-      //const isTrue = evalInContext(condition, context);
       const isTrue = context[condition]();
       // If the condition is true, render the content
       if (isTrue) {
-        return render(content, context);
+        return parse(content, context);
       }
       // Otherwise, return an empty string as the replacement for the #if block
       return "";
     }
   );
 
-  //console.log(html);
-
-  html = html.replace(/<!--\{(.+?)\}-->/g, (match, placeholder) => {
-    //console.log(`${match} ++++ ${placeholder} ++++ `);
+  html = html.replace(/<!--\{([^\/].+?)\}-->/g, (match, placeholder) => {
     // Split the placeholder into an array of keys (for nested values)
     const keys = placeholder.split(".");
     // Start with the top-level context object
@@ -123,14 +89,6 @@ function parse(template, context) {
 
   // Return the final rendered HTML
   return html;
-}
-
-// A utility function to evaluate a JavaScript expression in a given context object
-function evalInContext(js, context) {
-  //# Return the result of the evaluated expression
-  return function () {
-    return eval(js);
-  }.call(context);
 }
 
 module.exports = {
