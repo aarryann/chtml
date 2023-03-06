@@ -1,6 +1,5 @@
 (function(exports){
   exports.test = function(){
-    console.log('inside test');
     return 'called';
   }
 
