@@ -2,6 +2,7 @@
 <html>
 <head>
   <title><!--{title}--></title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
   This is public/index.html
@@ -33,9 +34,9 @@
     <!-- Render the itemsLength block value -->
     <!--{itemsLength}-->
   </ul>
-  <!--{test}-->
   <h1 class="sr-only">Network feeds</h1>
-  <ul role="list" class="space-y-4" data-re-container="feeds">
+    <!--{#call linker}-->
+    <ul role="list" class="space-y-4" data-re-container="feeds">
     <template id="question-template" data-re-dataset="feeds">
       <li data-re-data-uid="uniqueFeedId(id)" class="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg">
         <article data-re-aria-labelledby="labelize(id)">
@@ -148,6 +149,7 @@
       </li>
     </template>
   </ul>
+  <!--{/call}-->
 
 </body>
 </html>

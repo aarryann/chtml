@@ -2,6 +2,7 @@ const express = require("express");
 const chtml = require("./chtml");
 //const linker = require("./feed-alpine");
 const testFunction = require("./testFunction");
+const feedAlpine = require("./feeds-alpine");
 const fs = require("fs");
 const app = express();
 
@@ -42,6 +43,8 @@ app.get("/", (req, res) => {
       items: ["Item 1", "Item 2", "Item 3"],
       itemsLength: () => `There are ${context.items.length} items`,
       test: () => { testFunction.test(); return "test called"; },
+      feed: () => { feedAlpine.registerFirstFeed() },
+      linker: (html) =>{ return feedAlpine.linkFeed(html) }
     };
 
     const renderedHtml = chtml.render(html, context);

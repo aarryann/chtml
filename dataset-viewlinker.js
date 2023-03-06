@@ -43,32 +43,37 @@ DatasetLinker.invokeUtils = function (functionName, paramArgs) {
  * Reactively sync view to state data
  * key: string, state: any, oldState: any
  */
-DatasetLinker.viewSyncer = function (key, state, _, diffSet) {
-    const template = document.querySelector(`template[data-re-dataset="${key}"]`);
-    const container = document.querySelector(`[data-re-container="${key}"]`);
-    const dataset = state[key];
-    let firstRun = false;
-    if (!template || !container || !dataset)
-        return;
-    // viewMappers maps the
-    if (!(key in $$META)) {
-        $$META[key] = {};
-        $$META[key].viewMappers = [];
-        $$META[key].lastUniqueId = 1000;
-        firstRun = true;
-        DatasetLinker.setViewMapper(key);
-        DatasetLinker.syncAdditions(key, dataset, template, container, firstRun);
-    }
-    if (container.children.length <= 1) {
-        firstRun = true;
-        DatasetLinker.syncAdditions(key, dataset, template, container, firstRun);
-    }
-    if (!firstRun) {
-        //const diffSets = $$META[key].stateDiff;
-        DatasetLinker.syncDeletions(diffSet.get('del'), container);
-        DatasetLinker.syncUpdates(key, diffSet.get('update'), container);
-        DatasetLinker.syncAdditions(key, diffSet.get('add'), template, container, firstRun);
-    }
+/*
+ * Reactively sync view to state data
+ * key: string, state: any, oldState: any
+ */
+DatasetLinker.viewSyncer = function (key, state, _, diffSet, domDocument) {
+  if(!domDocument)
+    domDocument = document;
+  const template = domDocument.querySelector(`template[data-re-dataset="${key}"]`);
+  const container = domDocument.querySelector(`[data-re-container="${key}"]`);
+  const dataset = state[key];
+  let firstRun = false;
+  if (!template || !container || !dataset)
+      return;
+  // viewMappers maps the
+  if (!(key in $$META)) {
+      $$META[key] = {};
+      $$META[key].viewMappers = [];
+      $$META[key].lastUniqueId = 1000;
+      firstRun = true;
+      DatasetLinker.setViewMapper(key, domDocument);
+      DatasetLinker.syncAdditions(key, dataset, template, container, firstRun);
+  }
+  if (container.children.length <= 1) {
+      firstRun = true;
+      DatasetLinker.syncAdditions(key, dataset, template, container, firstRun);
+  }
+  if (diffSet) {
+      DatasetLinker.syncDeletions(diffSet.get('del'), container);
+      DatasetLinker.syncUpdates(key, diffSet.get('update'), container);
+      DatasetLinker.syncAdditions(key, diffSet.get('add'), template, container, firstRun);
+  }
 };
 /*
  * Get incremented unique id
@@ -174,8 +179,8 @@ DatasetLinker.syncUpdates = function (stateKey, dataset, container) {
 /*
  * Establish view - state data field mappings
  */
-DatasetLinker.setViewMapper = function (stateKey) {
-    const template = document.querySelector(`template[data-re-dataset="${stateKey}"]`);
+DatasetLinker.setViewMapper = function (stateKey, domDocument) {
+    const template = domDocument.querySelector(`template[data-re-dataset="${stateKey}"]`);
     // One phrase per element
     const matchedPhrases = template?.innerHTML.match(/data-re-.+["']/g);
     if (!matchedPhrases || matchedPhrases.length === 0) {
@@ -236,4 +241,7 @@ DatasetLinker.groupByNested = function (coll, group) {
         return entryMap;
     }, new Map());
 };
-export { DatasetLinker };
+
+module.exports = {
+  DatasetLinker,
+}

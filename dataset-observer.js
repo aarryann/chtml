@@ -23,11 +23,11 @@ DatasetObserver.init = function (force = false) {
 /*
  * Register local state data and state change callbacks
  */
-DatasetObserver.registerDataTrigger = function (stateKey, dataset, viewSyncerCallback) {
+DatasetObserver.registerDataTrigger = function (stateKey, dataset, viewSyncerCallback, domDocument) {
     DatasetObserver.init();
     DatasetObserver.subscribe('CHANNEL_DECORATORS', stateKey, (state, oldState, diffSet) => {
         // linkerCallback gets registered here but gets called after updateChannelData in the proxy
-        viewSyncerCallback(stateKey, state, oldState, diffSet);
+        viewSyncerCallback(stateKey, state, oldState, diffSet, domDocument);
     });
     DatasetObserver.updateObservedData(stateKey, dataset);
 };
@@ -38,6 +38,7 @@ DatasetObserver.updateObservedData = function (stateKey, dataset) {
     // find difference between old and new dataset
     if (stateKey in DatasetObserver.state) {
         const diff = DatasetObserver.diffDatasets(DatasetObserver.state[stateKey], dataset, 'id');
+        $$META[stateKey] || ($$META[stateKey] = {});
         $$META[stateKey].previousState = DatasetObserver.state[stateKey];
         $$META[stateKey].stateDiff = diff;
     }
@@ -65,7 +66,7 @@ DatasetObserver.stateFactory = function (initialState, subscriptions) {
             state[prop] = value;
             // Proxy listens to state change and invokes registered callback on state change
             // This is the core of reactivity is implemented
-            subscriptions[prop].forEach((subscriptionCallback) => subscriptionCallback(state, oldState, $$META[prop].stateDiff));
+            subscriptions[prop].forEach((subscriptionCallback) => subscriptionCallback(state, oldState, $$META[prop] && $$META[prop].stateDiff));
             return true;
         }
     });
@@ -119,4 +120,7 @@ DatasetObserver.diffDatasets = function (o, n, id) {
     ns.set('del', Array.from(oids.values()));
     return ns;
 };
-export { DatasetObserver };
+
+module.exports = {
+  DatasetObserver,
+}
