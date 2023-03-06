@@ -1,5 +1,7 @@
 const express = require("express");
 const chtml = require("./chtml");
+//const linker = require("./feed-alpine");
+const testFunction = require("./testFunction");
 const fs = require("fs");
 const app = express();
 
@@ -39,6 +41,7 @@ app.get("/", (req, res) => {
       subsubheader: "And check these out too-3:",
       items: ["Item 1", "Item 2", "Item 3"],
       itemsLength: () => `There are ${context.items.length} items`,
+      test: () => { testFunction.test(); return "test called"; },
     };
 
     const renderedHtml = chtml.render(html, context);
