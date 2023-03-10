@@ -5,7 +5,20 @@
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-  This is public/index.html
+  <script type="text/javascript">
+    const scriptQLevel1 = [];
+    const moduleQLevel1 = [];
+    const moduleQLevel2 = [];
+    const moduleQLevel3 = [];
+
+    moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");
+    moduleQLevel2.push("public/js/feeds/feeds-alpine.js?id=e4011e12d06ad59c95ef3f52a2a5360b");
+    moduleQLevel2.push("public/js/feeds/feeds-alpine.js?id=e4011e12d06ad59c95ef3f52a2a5360b");
+    moduleQLevel2.push("public/js/feeds/feeds-alpine.js?id=e4011e12d06ad59c95ef3f52a2a5360b");
+    moduleQLevel3.push("https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js");
+
+    scriptQLevel1.push("public/js/data/feed-data-new.js");
+  </script>  This is public/index.html
   <!-- If showHeader is true, render the header -->
   <!--{#if showHeader}-->
   <h1><!--{header}--></h1>
@@ -150,6 +163,39 @@
     </template>
   </ul>
   <!--{/call}-->
-
+  <script defer type="text/javascript">
+    function downloadJS(b, script, type = "text/javascript") {
+      var element = document.createElement("script");
+      element.type = type;
+      element.src = script;
+      (b || document.body).appendChild(element);
+    }
+    function downloadJSAtOnload() {
+      const b = document.body;
+      setTimeout(function(){
+        for (i=0; i < scriptQLevel1.length; i++) {
+          downloadJS(b, scriptQLevel1[i]);
+        }
+        for (i=0; i < moduleQLevel1.length; i++) {
+          downloadJS(b, moduleQLevel1[i], "module");
+        }
+        setTimeout(function(){
+          for (i=0; i < moduleQLevel2.length; i++) {
+            downloadJS(b, moduleQLevel2[i], "module");
+          }
+          setTimeout(function(){
+            for (i=0; i < moduleQLevel3.length; i++) {
+              downloadJS(b, moduleQLevel3[i], "module");
+            }
+          }, 200);
+        }, 100);
+      }, 0);
+    }
+    if (window.addEventListener)
+        window.addEventListener("load", downloadJSAtOnload, false);
+    else if (window.attachEvent)
+        window.attachEvent("onload", downloadJSAtOnload);
+    else window.onload = downloadJSAtOnload;
+  </script>
 </body>
 </html>
