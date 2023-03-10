@@ -1,6 +1,6 @@
-const DatasetObserver = require('./dataset-observer').DatasetObserver;
-const DatasetLinker = require('./dataset-viewlinker').DatasetLinker;
-const feeds = require('./feed-data');
+const DatasetObserver = require('../lib/dataset-observer').DatasetObserver;
+const DatasetLinker = require('../lib/dataset-viewlinker').DatasetLinker;
+const feeds = require('../data/feed-data');
 const jsdom = require("jsdom");
 
 function registerUtils(mk) {
