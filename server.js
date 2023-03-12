@@ -1,10 +1,9 @@
 const express = require("express");
-const chtml = require("./chtml");
+const hct = require("./lib/hct");
 const fs = require("fs");
 const app = express();
 const path = require('path');
 
-app.set("views", "./public");
 app.set("view engine", "html");
 
 // Serve static HTML files using the HTML commenting template engine
@@ -29,7 +28,7 @@ app.get("*", (req, res) => {
     }
 
     const context = require(`./${contextPath}`) || {};
-    const renderedHtml = chtml.render(html, context);
+    const renderedHtml = hct.render(html, context);
 
     res.send(renderedHtml);
   });
