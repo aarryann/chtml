@@ -4,7 +4,7 @@
   "description": "Example of using HTML commenting template engine with Express.js server",
   "main": "server.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "dev:man": "nodemon server.js",
     "build": "tsc && vite build",
     "preview": "vite preview"

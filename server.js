@@ -7,7 +7,7 @@ const path = require('path');
 app.set("view engine", "html");
 
 // Serve static HTML files using the HTML commenting template engine
-
+/*
 app.get("*", (req, res) => {
   let pagePath = path.join('public', req.path, ".html").replace("/.html", ".html");
   let contextPath = path.join('./public/js', req.path, "-ssr.js").replace("/-ssr.js", "-ssr.js");
@@ -33,7 +33,8 @@ app.get("*", (req, res) => {
     res.send(renderedHtml);
   });
 });
-//app.use(express.static("public"));
+*/
+app.use(express.static("public"));
 
 // Start the server
 app.listen(3000, () => console.log("Server running on port 3000"));

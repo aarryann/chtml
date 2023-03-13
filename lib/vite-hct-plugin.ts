@@ -1,17 +1,16 @@
 import {Plugin, ResolvedConfig, UserConfig} from "vite";
 const hct = require('./hct');
-const path = require('path');
 
 // ShortHand for EjsOptions or Undefined
 
 /**
- * Vite Ejs Plugin Function
- * See https://github.com/trapcodeio/vite-plugin-ejs for more information
+ * Vite Hct Plugin Function
+ * See https://github.com/trapcodeio/vite-plugin-hct for more information
  * @example
  * export default defineConfig({
  *  plugins: [
  *  vue(),
- *  ViteEjsPlugin({foo: 'bar'})
+ *  ViteHctPlugin()
  *  ],
  * });
  */
@@ -28,22 +27,13 @@ function ViteHctPlugin(data: Object = {}, options?: any): Plugin {
 
     transformIndexHtml: {
       enforce: "pre",
-      transform(html, ctx) {
-        if (typeof data === "function") data = data(config);
-        let hctOptions = options && options.hct ? options.hct : {};
-        if (typeof hctOptions === "function") hctOptions = hctOptions(config);
-        const dataPath = path.join(ctx.path, ctx.filename).replace('.html', '-ssr.js');
-
-
-        html = hct.render(
-          html
-        );
+      transform(html) {
+        html = hct.render(html);
 
         return html;
       }
     }
   };
 }
-
 
 export {ViteHctPlugin, hct}

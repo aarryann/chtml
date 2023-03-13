@@ -1,0 +1,22 @@
+<!--{#context src="./index-ssr.js" /}-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title><!--{title}--></title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<%- include('./src/components/app/module-loader-init'); %>
+
+  <script type="text/javascript">
+    moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");
+    moduleQLevel2.push("/js/feeds/feeds-alpine.js?id=e4011e12d06ad59c95ef3f52a2a5360b");
+    moduleQLevel3.push("https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js");
+
+    scriptQLevel1.push("/js/data/feed-data-new.js");
+  </script>
+<%- include('./src/components/app/sample'); %>
+<%- include('./src/components/feeds/feedList'); %>
+<%- include('./src/components/app/module-loader-queue'); %>
+</body>
+</html>

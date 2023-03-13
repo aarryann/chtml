@@ -1,0 +1,20 @@
+<!--{#context src="./src/index-ssr.js" /}-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title><!--{title}--></title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<%- include('./components/app/module-loader-init'); %>
+
+  <script type="text/javascript">
+    moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");
+    moduleQLevel3.push("https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js");
+
+  </script>
+<%- include('./components/app/menu'); %>
+<%- include('./components/app/sample'); %>
+<%- include('./components/app/module-loader-queue'); %>
+</body>
+</html>
