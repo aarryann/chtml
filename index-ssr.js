@@ -1,4 +1,4 @@
-const feedAlpine = require("./feeds/feeds-alpine");
+const feedAlpine = require("./lib/feeds/feeds-alpine");
 
 const context = {
   title: "My Website",

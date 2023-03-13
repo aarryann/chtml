@@ -1,10 +1,10 @@
 import {defineConfig} from "vite";
-import {ViteEjsPlugin} from "vite-plugin-ejs";
+import {ViteHctPlugin} from "./lib/vite-hct-plugin.js";
 
 export default defineConfig({
   plugins: [
     // Without Data
-    ViteEjsPlugin(),
+    ViteHctPlugin(),
     
   ],
 });

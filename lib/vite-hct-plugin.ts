@@ -36,18 +36,7 @@ function ViteHctPlugin(data: Object = {}, options?: any): Plugin {
 
 
         html = hct.render(
-          html,
-          {
-            NODE_ENV: config.mode,
-            isDev: config.mode === "development",
-            ...data
-          },
-          {
-            // setting views enables includes support
-            views: [config.root],
-            ...hctOptions,
-            async: false // Force sync
-          }
+          html
         );
 
         return html;
