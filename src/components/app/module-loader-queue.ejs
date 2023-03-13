@@ -1,0 +1,37 @@
+  <script defer type="text/javascript">
+
+    function downloadJS(b, script, type = "text/javascript") {
+      var element = document.createElement("script");
+      element.type = type;
+      element.src = script;
+      (b || document.body).appendChild(element);
+    }
+
+    function downloadJSAtOnload() {
+      const b = document.body;
+      setTimeout(function(){
+        for (i=0; i < scriptQLevel1.length; i++) {
+          downloadJS(b, scriptQLevel1[i]);
+        }
+        for (i=0; i < moduleQLevel1.length; i++) {
+          downloadJS(b, moduleQLevel1[i], "module");
+        }
+        setTimeout(function(){
+          for (i=0; i < moduleQLevel2.length; i++) {
+            downloadJS(b, moduleQLevel2[i], "module");
+          }
+          setTimeout(function(){
+            for (i=0; i < moduleQLevel3.length; i++) {
+              downloadJS(b, moduleQLevel3[i], "module");
+            }
+          }, 200);
+        }, 100);
+      }, 0);
+    }
+    if (window.addEventListener)
+      window.addEventListener("load", downloadJSAtOnload, false);
+    else if (window.attachEvent)
+      window.attachEvent("onload", downloadJSAtOnload);
+    else window.onload = downloadJSAtOnload;
+
+  </script>
