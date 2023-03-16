@@ -4,11 +4,11 @@ import {ViteEjsPlugin} from "vite-plugin-ejs";
 import {ViteHctPlugin} from "./lib/vite-hct-plugin.js";
 
 const root = resolve(__dirname, 'src');
-const outDir = resolve(__dirname, 'dist');
+const outDir = resolve(__dirname, 'public');
 
 export default defineConfig({
   root,
-  plugins: [ ViteEjsPlugin(), ViteHctPlugin(), ],
+  plugins: [ ViteEjsPlugin(), ViteHctPlugin() ],
   build: {
     outDir,
     emptyOutDir: true,
@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         main: resolve(root, 'index.html'),
         feeds: resolve(root, 'feeds', 'index.html'),
+
       }
     }
   }

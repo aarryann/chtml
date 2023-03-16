@@ -3,12 +3,15 @@
 <html>
 <head>
   <title><!--{title}--></title>
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="./assets/css/main.css" rel="stylesheet">
 </head>
 <body>
 <%- include('./components/app/module-loader-init'); %>
-
+<script type="text/javascript" src="./feed-data-new.js"></script>
+<script type="text/javascript" src="./tmp.ts"></script>
+<h1 class="text-cyan-500">Test</h1>
   <script type="text/javascript">
+    console.log(FEED_DATA_NEW);
     moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");
     moduleQLevel3.push("https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js");
 

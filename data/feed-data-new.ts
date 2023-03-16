@@ -1,4 +1,4 @@
-FEED_DATA_NEW = [
+export const FEED_DATA_NEW = [
   {
     id: 71654,
     author: 'Augustin Doughman',
