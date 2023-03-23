@@ -1,12 +1,12 @@
-<!--{#context src="./index-ssr.js" /}-->
+<!--{#context src="./src/feeds/index-ssr.js" /}-->
 <!DOCTYPE html>
 <html>
 <head>
   <title><!--{title}--></title>
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="../assets/css/main.css" rel="stylesheet">
 </head>
 <body>
-<%- include('./src/components/app/module-loader-init'); %>
+<h1 class="text-cyan-500">Test</h1>
 
   <script type="text/javascript">
     moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");
@@ -15,8 +15,8 @@
 
     scriptQLevel1.push("/js/data/feed-data-new.js");
   </script>
-<%- include('./src/components/app/sample'); %>
-<%- include('./src/components/feeds/feedList'); %>
-<%- include('./src/components/app/module-loader-queue'); %>
+<%- include('./components/app/menu') %>
+<%- include('./feeds/components/feedList') %>
+<%- include('./components/app/module-loader-queue') %>
 </body>
 </html>
