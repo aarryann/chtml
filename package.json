@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "dev:man": "nodemon server.js",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "pack": "npm run webpack"
+    "build": "tsc && vite build"
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -21,10 +19,6 @@
     "@types/jsdom": "^21.1.0",
     "@types/node": "^18.15.3",
     "autoprefixer": "^10.4.14",
-    "browserify": "^17.0.0",
-    "clean-webpack-plugin": "^4.0.0",
-    "eslint-webpack-plugin": "^4.0.0",
-    "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.21",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
