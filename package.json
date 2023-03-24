@@ -4,14 +4,16 @@
   "description": "Example of using HTML commenting template engine with Express.js server",
   "main": "server.js",
   "scripts": {
-    "dev": "vite --host",
     "dev:man": "nodemon server.js",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "pack": "npm run webpack"
+    "pack": "./node_modules/.bin/webpack",
+    "gen": "node scripts/gen.js",
+    "start": "npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
+    "front-matter": "^4.0.2",
     "fs": "^0.0.1-security",
     "jsdom": "^21.1.1",
     "path": "^0.12.7"
@@ -24,10 +26,13 @@
     "browserify": "^17.0.0",
     "clean-webpack-plugin": "^4.0.0",
     "eslint-webpack-plugin": "^4.0.0",
+    "fs-extra": "^11.1.1",
     "html-webpack-plugin": "^5.5.0",
+    "marked": "^4.3.0",
     "nodemon": "^2.0.21",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
+    "ts-loader": "^9.4.2",
     "typescript": "^5.0.2",
     "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1"

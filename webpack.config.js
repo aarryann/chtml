@@ -31,12 +31,22 @@ const htmlGenerators = listOfComponents.reduce((entries, item) => {
 module.exports = {
   mode: "production",
   resolve: {
+    extensions: ['.ts', '.js'],
     fallback: {
       net: false, tls: false, fs: false, crypto: false, http: false, https: false, stream: false, zlib: false, os: false, child_process: false, perf_hooks: false,
     }
   },
   stats: { children: true },
-  entry,   
+  entry,
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash:8].js',   
@@ -71,4 +81,11 @@ module.exports = {
       },
     },   
   }, 
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
+    compress: true,
+    port: 9000,
+  },
 };

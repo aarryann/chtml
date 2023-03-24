@@ -1,32 +1,37 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "commonjs",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
-    "strict": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
+    "target": "esnext",
+    "lib": ["dom", "es2018", "ES2021.String"],
+    "allowJs": true,
     "skipLibCheck": true,
-    "declaration": true, // Generate .d.ts files from TypeScript and JavaScript files in your project.
-    "declarationDir": "./lib", // Specify the output directory for generated declaration files.
-    "noImplicitAny": true, // Enable error reporting for expressions and declarations with an implied any type..
-    "outDir": "./lib", // Specify an output folder for all emitted files.
-    "inlineSources": true, // Include source code in the sourcemaps inside the emitted JavaScript.
-    "sourceMap": true, // Create source map files for emitted JavaScript files.
-    "allowSyntheticDefaultImports": true, // Allow 'import x from y' when a module doesn't have a default export.
-    "noEmitOnError":false // allows files to be compiled even if there is an error
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "jsx": "preserve",
+    "alwaysStrict": true,
+    "baseUrl": "./",
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "paths": {
+      "@components/*": ["./components/*"],
+      "@config/*": ["./config/*"],
+      "@framework/*": ["./framework/*"],
+      "@lib/*": ["./lib/*"],
+      "@mocks/*": ["./__mocks__/*"],
+      "@pages/*": ["./pages/*"],
+      "@public/*": ["./public/*"],
+      "@plugins/*": ["./plugins/*"],
+      "@server/*": ["./server/*"],
+      "@tests/*": ["./__tests__/*"],
+      "@theme/*": ["./theme/*"]
+    },
+    "outDir": "dist",
   },
-  "typedocOptions": {
-    "mode": "modules",
-    "out": "docs"
-  },
-  "include": ["src/**/*"], // glob files for the compilator to look for
-  "exclude": ["node_modules", "lib"] // files to ignore(makes the compilation faster)
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "scripts", "src/assets", "public", "tmp"]
 }
