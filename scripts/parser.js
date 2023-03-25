@@ -8,14 +8,15 @@ const buildDefaults = {
    * Parse options, setting the defaults on missing values
    */
   const parseOptions = options => {
-    const { srcPath, outputPath, cleanUrls } = Object.assign(
+    const { srcPath, outputPath, cleanUrls, site, template } = Object.assign(
       {},
       buildDefaults,
-      options.build
+      options.build,
+      {site: options.site || {}},
+      {template: options.template || {}}
     );
-    const site = options.site || {};
-  
-    return { srcPath, outputPath, cleanUrls, site };
+
+    return { srcPath, outputPath, cleanUrls, site, template };
   };
   
   module.exports = {

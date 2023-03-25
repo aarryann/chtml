@@ -1,4 +1,4 @@
-const feedAlpine = require("../../lib/feeds/feeds-alpine");
+const feedAlpine = require("../../../lib/feeds/feeds-alpine");
 const jsdom = require("jsdom");
 
 const context = {

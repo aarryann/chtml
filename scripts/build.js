@@ -23,8 +23,9 @@ const build = (options = siteoptions || {}) => {
   let lastGenDate,
     genTime = new Date(),
     genCount = 0;
-
-  const { srcPath, outputPath, cleanUrls, site } = parseOptions(options);
+  
+  const { srcPath, outputPath, cleanUrls, site, template } = parseOptions(options);
+  console.log(template.delimiter);
 
   // buildMode: full- build all files, incremental- build incremental since last build, &
   // buildMode: keyonly- build no files, only generate the last gen time key
@@ -73,7 +74,7 @@ const build = (options = siteoptions || {}) => {
         //console.log(`************${file}`) &&
         _generate(`${srcPath}/pages/${file}`, lastGenDate) &&
         ++genCount &&
-        _buildPage(file, { srcPath, outputPath, cleanUrls, site })
+        _buildPage(file, { srcPath, outputPath, cleanUrls, site, template })
     );
   }
 
@@ -129,7 +130,7 @@ const _loadLayout = (layout, pluginDir, { srcPath }) => {
 /**
  * Build a single page
  */
-const _buildPage = (file, { srcPath, outputPath, cleanUrls, site }) => {
+const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) => {
   log.info(`building - ${file}...`);
   const fileData = path.parse(file);
   // render complete page as well as page fragment for full loading vs partial (htmx) loading
@@ -154,7 +155,8 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site }) => {
   const pageData = frontMatter(data);
   const templateConfig = {
     site,
-    page: pageData.attributes
+    page: pageData.attributes,
+    delimiter: template.delimiter
   };
 
   let pageContent;
@@ -165,10 +167,11 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site }) => {
     case '.md':
       pageContent = marked(pageData.body);
       break;
-    case '.ejs':
-      pageContent = ejs.render(pageData.body, templateConfig, {
+      case '.html':
+      case '.ejs':
+      pageContent = ejs.render(pageData.body, Object.assign({}, templateConfig, {
         filename: `${srcPath}/page-${pageSlug}`
-      });
+      }));
       break;
     default:
       pageContent = pageData.body;

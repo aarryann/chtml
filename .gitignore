@@ -1,6 +1,6 @@
 !*.swp
 .env
-/dist
-/public
-/node_modules
+dist
+node_modules
+public
 package-lock.json

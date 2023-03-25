@@ -2,7 +2,9 @@ module.exports = {
   build: {
     srcPath: './src',
     outputPath: './public',
-    ejsdelimiter: '?'
+  },
+  template:{
+    delimiter: '?'
   },
   site: {
     title: 'GO'
