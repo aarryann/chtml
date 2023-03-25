@@ -21,8 +21,8 @@ const htmlGenerators = listOfComponents.reduce((entries, item) => {
 		chunks: [item.handle],
     //filename: path.join(__dirname, 'public', item.html),
     //template: path.join(__dirname, 'src', item.html),
-    filename: `./public/${item.html}`,
-    template: `./src/${item.html}`,
+    filename: `./${item.html}`,
+    template: `./src/pages/${item.html}`,
 	}));
 	return entries;
 }, []);
@@ -54,11 +54,12 @@ module.exports = {
   plugins: [
     //new ESLintPlugin(),
 		new CleanWebpackPlugin(), // use the clean plugin to delete the dist folder before a build
-    new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly   
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: `./src/index1.ejs`,
-    }),
+    new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
+    ...htmlGenerators
+    //new HtmlWebpackPlugin({
+    //  inject: true,
+    //  template: `./src/pages/index.html`,
+    //}),
   ],
   optimization: {
     runtimeChunk: 'single',
