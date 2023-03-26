@@ -12,7 +12,7 @@ const MiniCssExtractPlugin = new _MiniCssExtractPlugin({
 });
 
 const ESLintPlugin = new _ESLintPlugin({
-  overrideConfigFile: path.resolve(__dirname, '.eslintrc'),
+  overrideConfigFile: path.resolve(__dirname, '../config/.eslintrc'),
   context: path.resolve(__dirname, '../../src'),
   files: '**/*.js',
 });
