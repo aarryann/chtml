@@ -37,42 +37,6 @@ const htmlGenerators = listOfComponents.reduce((entries, item) => {
 
 
 module.exports = {
-  mode: "production",
-  resolve: {
-    extensions: ['.ts', '.js', '.css'],
-    fallback: {
-      net: false, tls: false, fs: false, crypto: false, http: false, https: false, stream: false, zlib: false, os: false, child_process: false, perf_hooks: false,
-    }
-  },
-  stats: { children: true },
-  entry,
-  plugins: [
-    //new ESLintPlugin(),
-		new CleanWebpackPlugin(), // use the clean plugin to delete the dist folder before a build
-    new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
-    ...htmlGenerators,
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.ts?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/,
-        include: path.resolve(__dirname, 'src'),
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
-      },      
-    ],
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'js/[name].[contenthash:8].js',   
-  },
   optimization: {
     runtimeChunk: 'single',
     splitChunks: {
@@ -94,10 +58,5 @@ module.exports = {
       },
     },   
   }, 
-  devServer: {
-    static: 'dist',
-    compress: true,
-    port: 9000,
-    watchContentBase: true,
-  },
+
 };
