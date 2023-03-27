@@ -22,7 +22,7 @@ module.exports = {
   },
   output: {
     filename: "js/[name].bundle.[contenthash:8].js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "../../dist"),
   },
   plugins: [
     new webpack.ProgressPlugin(),
