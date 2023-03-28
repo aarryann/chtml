@@ -18,7 +18,17 @@ module.exports = {
       loaders.TSLoader,
       loaders.CSSLoader,
       loaders.FileLoader,
+      {
+        test: /\.html?$/,
+        use: ['html-loader', 'full-partial-view-loader'],
+        include: /src/,
+      },
     ]
+  },
+  resolveLoader: {
+    alias: {
+      'full-partial-view-loader': path.resolve(__dirname, 'full-partial-view-loader.js'),
+    },
   },
   output: {
     filename: "js/[name].bundle.[contenthash:8].js",
