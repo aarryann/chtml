@@ -1,4 +1,4 @@
-const FEED_DATA = [
+export const FEED_DATA_NEW = [
   {
     id: 81614,
     author: 'Dries Vincent',
@@ -72,7 +72,3 @@ const FEED_DATA = [
     views: 6200
   }
 ];
-
-module.exports = {
-  FEED_DATA,
-}

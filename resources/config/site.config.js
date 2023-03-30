@@ -1,12 +1,14 @@
 module.exports = {
   build: {
     srcPath: './src',
-    outputPath: './public',
+    outputPath: './gen',
+    includefiles: [],
+    excludefiles: []  
   },
   template:{
     delimiter: '?'
   },
   site: {
     title: 'GO'
-  }
+  },
 };

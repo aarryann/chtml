@@ -14,7 +14,7 @@ const CSSLoader = {
     {
       loader: MiniCssExtractPlugin.loader,
       options: {
-        publicPath: path.resolve(__dirname, '../../dist/css/')
+        publicPath: path.resolve(__dirname, '../../public/css/')
       }
     },
     {
@@ -39,7 +39,7 @@ const FileLoader = {
       loader: 'file-loader',
       options: {
         outputPath: 'images',
-        publicPath: path.resolve(__dirname, 'dist/')
+        publicPath: path.resolve(__dirname, 'public/')
       },
     },
   ],

@@ -6,9 +6,7 @@ const marked = require('marked');
 const frontMatter = require('front-matter');
 const glob = require('glob');
 const log = require('./logger');
-const { parseOptions } = require('./parser');
-const siteoptions = require('../site.config');
-const config = require('./config');
+const siteoptions = require('../config/site.config');
 const { encrypt, decrypt } = require('./crypto');
 const secretKey = process.env.SECRET1;
 let buildMode = process.env.BUILDMODE;
@@ -24,8 +22,10 @@ const build = (options = siteoptions || {}) => {
     genTime = new Date(),
     genCount = 0;
   
-  const { srcPath, outputPath, cleanUrls, site, template } = parseOptions(options);
-  console.log(template.delimiter);
+  const { srcPath, outputPath, cleanUrls, site, template, includefiles, excludefiles } = Object.assign( {}, 
+    { srcPath: './src', outputPath: './public', cleanUrls: true }, 
+    options.build, {site: options.site || {}}, {template: options.template || {}}
+  );
 
   // buildMode: full- build all files, incremental- build incremental since last build, &
   // buildMode: keyonly- build no files, only generate the last gen time key
@@ -72,7 +72,7 @@ const build = (options = siteoptions || {}) => {
     files.forEach(
       file =>
         //console.log(`************${file}`) &&
-        _generate(`${srcPath}/pages/${file}`, lastGenDate) &&
+        _generate(`${srcPath}/pages/${file}`, lastGenDate, includefiles, excludefiles) &&
         ++genCount &&
         _buildPage(file, { srcPath, outputPath, cleanUrls, site, template })
     );
@@ -91,14 +91,14 @@ const build = (options = siteoptions || {}) => {
 /**
  * generate build signal
  */
-const _generate = (file, lastGenDate) => {
+const _generate = (file, lastGenDate, includefiles, excludefiles) => {
   // Skip if current file is not in selected file list
-  let gen = config.includefiles.length === 0 || (config.includefiles.length > 0 && config.includefiles.includes(file));
+  let gen = includefiles.length === 0 || (includefiles.length > 0 && includefiles.includes(file));
   // skip and return if false build signal
   if (gen == false) return gen;
 
   // Skip if current file is in excluded file list
-  gen = config.excludefiles.length === 0 || (config.excludefiles.length > 0 && !config.excludefiles.includes(file));
+  gen = excludefiles.length === 0 || (excludefiles.length > 0 && !excludefiles.includes(file));
   // skip and return if false build signal
   if (gen == false) return gen;
 

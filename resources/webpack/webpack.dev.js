@@ -9,7 +9,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: path.join(__dirname, 'public'),
-    static: 'dist',
+    static: 'public',
     compress: true,
     port: 9000,
     watchContentBase: true,    

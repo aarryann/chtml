@@ -1,6 +1,7 @@
 !*.swp
 .env
 dist
+gen
 node_modules
 public
 package-lock.json

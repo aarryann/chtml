@@ -31,7 +31,7 @@ const HtmlWebpackPlugin = entryComponents.reduce((entries, item) => {
       //filename: path.join(__dirname, 'public', item.html),
       //template: path.join(__dirname, 'src', item.html),
       filename: `./${item.html}`,
-      template: `./src/pages/${item.html}`,
+      template: `./gen/${item.html}`,
     }));
   }
 	return entries;
