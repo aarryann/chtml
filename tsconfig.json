@@ -33,5 +33,5 @@
     "outDir": "dist",
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist", "gen", "resources/scripts", "src/assets", "public", "tmp"]
+  "exclude": ["node_modules", "dist", "gen", "res/scripts", "src/assets", "public", "tmp"]
 }

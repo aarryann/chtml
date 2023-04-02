@@ -6,12 +6,12 @@
   "scripts": {
     "dev:man": "nodemon server.js",
     "pack": "./node_modules/.bin/webpack",
-    "gen": "node resources/scripts/gen.js",
+    "gen": "node res/scripts/gen.js",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run gen && webpack --config resources/webpack/webpack.dev.js ",
-    "build": "npm run gen && webpack --config resources/webpack/webpack.prod.js ",
-    "watch": "webpack --watch --config resources/webpack/webpack.dev.js"
+    "dev": "npm run gen && webpack --config res/webpack/webpack.dev.js ",
+    "build": "npm run gen && webpack --config res/webpack/webpack.prod.js ",
+    "watch": "webpack --watch --config res/webpack/webpack.dev.js"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
