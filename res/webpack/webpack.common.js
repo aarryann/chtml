@@ -10,19 +10,19 @@ const nodeConfig = {
   target: 'node',
   externals: [nodeExternals()],
   output: {
+    filename: "node/[name].bundle.js",
     path: path.resolve(__dirname, "../../public"),
-    filename: 'node.js',
     libraryTarget: 'umd',
     libraryExport: 'default',
   },
 };
 
-const broowserConfig = {
+const browserConfig = {
   entry,
   target: 'web',
   output: {
+    filename: "js/[name].bundle.[contenthash:8].js",
     path: path.resolve(__dirname, "../../public"),
-    filename: 'browser.js',
     libraryTarget: 'umd',
     globalObject: 'this',
     libraryExport: 'default',
@@ -32,12 +32,19 @@ const broowserConfig = {
 };
 
 module.exports = (env, argv) => {
-  if(argv.mode === 'development'){
-    general.devtool = 'cheap-module-source-map';
-  } else if(argv.mode === 'production'){
-  } else {
-    throw new Error('Specify env');
-  }
+
+  const nodeConfig = merge( general, {
+    entry: './src/node.ts',
+    target: 'node',
+    externals: [nodeExternals()],
+    output: {
+      filename: "node/[name].bundle.js",
+      path: path.resolve(__dirname, "../../public"),
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+    },
+  };
+
   Object.assign(nodeConfig, general);
   Object.assign(browserConfig, general);
 
