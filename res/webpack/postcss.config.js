@@ -1,6 +1,6 @@
 module.exports = {
   plugins: {
-    'tailwindcss': { config: './tailwind.config.js' },
+    'tailwindcss': { config: './res/webpack/tailwind.config.js' },
     'postcss-import': {},
     'postcss-preset-env': {
       browsers: 'last 2 versions',

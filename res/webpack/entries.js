@@ -1,6 +1,6 @@
-const entryComponents = require('./entry.config');
+const entryConf = require('./entry.config');
 
-const entries = entryComponents.reduce((entryList, item) => {
+const browserEntries = entryConf.browserEntry.reduce((entryList, item) => {
   if(item.js)
     entryList[item.handle] = item.js;
   else if (item.css)
@@ -8,5 +8,8 @@ const entries = entryComponents.reduce((entryList, item) => {
   return entryList;
 }, {});
 
-module.exports = entries;
+module.exports = {
+  browserEntries,
+  nodeEntries: entryConf.nodeEntry
+}
   

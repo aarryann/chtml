@@ -23,7 +23,7 @@ const StyleLintPlugin = new _StyleLintPlugin({
   files: '**/*.css',
 });
 
-const HtmlWebpackPlugin = entryComponents.reduce((entries, item) => {
+const HtmlWebpackPlugin = entryComponents.browserEntry.reduce((entries, item) => {
   if(item.html){
     entries.push(new _HtmlWebpackPlugin({
       inject: true,

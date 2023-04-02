@@ -1,4 +1,4 @@
-const entryComponents = [
+const browserEntry = [
   {"handle": "main",  "js": "/lib/index"              , "html": "/index.html"},
   {"handle": "feeds", "js": "/lib/feeds/feeds-alpine" , "html": "/feeds/index.html"},
   {"handle": "about", "js": "/lib/about/index"        , "html": "/about/index.html"},
@@ -6,4 +6,9 @@ const entryComponents = [
   {"handle": "tailwind", "css": "/src/main.css"},
 ];
 
-module.exports = entryComponents;
+const nodeEntry = ["/lib/index", "/lib/feeds/feeds-alpine", "/lib/about/index"];
+
+module.exports = {
+  browserEntry,
+  nodeEntry
+}

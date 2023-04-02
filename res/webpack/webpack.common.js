@@ -2,57 +2,11 @@ const path = require('path');
 const loaders = require('./loaders');
 const plugins = require('./plugins');
 const entry = require('./entries');
-const general = require('./webpack.general.js');
 const webpack = require('webpack'); // to access built-in plugins
+const { merge } = require('webpack-merge');
+const nodeExternals = require('webpack-node-externals');
 
-const nodeConfig = {
-  entry: './src/node.ts',
-  target: 'node',
-  externals: [nodeExternals()],
-  output: {
-    filename: "node/[name].bundle.js",
-    path: path.resolve(__dirname, "../../public"),
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-  },
-};
-
-const browserConfig = {
-  entry,
-  target: 'web',
-  output: {
-    filename: "js/[name].bundle.[contenthash:8].js",
-    path: path.resolve(__dirname, "../../public"),
-    libraryTarget: 'umd',
-    globalObject: 'this',
-    libraryExport: 'default',
-    umdNamedDefine: true,
-    library: 'go',
-  },
-};
-
-module.exports = (env, argv) => {
-
-  const nodeConfig = merge( general, {
-    entry: './src/node.ts',
-    target: 'node',
-    externals: [nodeExternals()],
-    output: {
-      filename: "node/[name].bundle.js",
-      path: path.resolve(__dirname, "../../public"),
-      libraryTarget: 'umd',
-      libraryExport: 'default',
-    },
-  };
-
-  Object.assign(nodeConfig, general);
-  Object.assign(browserConfig, general);
-
-  return [nodeConfig, broowserConfig];
-};
-
-module.exports =  {
-  entry,
+let generalConfig =  {
   resolve: {
     extensions: ['.ts', '.js', '.css'],
     fallback: {
@@ -78,6 +32,58 @@ module.exports =  {
     plugins.StyleLintPlugin,
     new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     plugins.MiniCssExtractPlugin,
-    ...plugins.HtmlWebpackPlugin,
   ],
 };
+
+module.exports = (env, argv) => {
+  if(argv.mode === 'development'){
+    generalConfig = merge(generalConfig, {
+      mode: 'development',
+      devtool: 'inline-source-map',
+      devServer: {
+        contentBase: path.join(__dirname, 'public'),
+        static: 'public',
+        compress: true,
+        port: 9000,
+        watchContentBase: true,    
+      },
+    });
+  } else if(argv.mode === 'production'){
+    generalConfig = merge(generalConfig, {
+      mode: 'production',
+    });
+  } else{
+    throw new Error('Specify Env');
+  }
+  const nodeConfig = merge( generalConfig, {
+    entry: entry.nodeEntries,
+    target: 'node',
+    externals: [nodeExternals()],
+    output: {
+      filename: "[name].bundle.js",
+      path: path.resolve(__dirname, "../../node"),
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+    },
+  });
+
+  const browserConfig = merge( generalConfig, {
+    entry: entry.browserEntries,
+    target: 'web',
+    plugins:[
+      ...plugins.HtmlWebpackPlugin,
+    ],
+    output: {
+      filename: "js/[name].bundle.[contenthash:8].js",
+      path: path.resolve(__dirname, "../../public"),
+      libraryTarget: 'umd',
+      globalObject: 'this',
+      libraryExport: 'default',
+      umdNamedDefine: true,
+      library: 'go',
+    },
+  });
+
+  return [nodeConfig, browserConfig];
+};
+

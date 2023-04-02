@@ -9,7 +9,7 @@
     "gen": "node res/scripts/gen.js",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run gen && webpack --config res/webpack/webpack.dev.js ",
+    "dev": "npm run gen && webpack --config=res/webpack/webpack.common.js --mode=development",
     "build": "npm run gen && webpack --config res/webpack/webpack.prod.js ",
     "watch": "webpack --watch --config res/webpack/webpack.dev.js"
   },
@@ -50,6 +50,7 @@
     "typescript": "^5.0.2",
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.8.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }

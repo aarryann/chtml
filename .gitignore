@@ -2,6 +2,7 @@
 .env
 dist
 gen
+node
 node_modules
 public
 package-lock.json
