@@ -4,7 +4,7 @@ const plugins = require('./plugins');
 const entry = require('./entries');
 const webpack = require('webpack'); // to access built-in plugins
 
-module.exports = {
+module.exports =  {
   entry,
   resolve: {
     extensions: ['.ts', '.js', '.css'],

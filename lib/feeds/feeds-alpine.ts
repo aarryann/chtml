@@ -1,6 +1,6 @@
 import { DatasetObserver } from '../dataset-observer';
 import { DatasetLinker } from '../dataset-linker';
-import * as FEED_DATA from '../../data/feed-data';
+import * as FEED_DATA from '../../res/data/feed-data';
 import {ISessionUser, IChannelInputs, IDatasetObject} from 'index';
 
 if (!sessionStorage.getItem('user')) {
