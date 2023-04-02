@@ -1,4 +1,4 @@
-const entryComponents = require('../config/entry.config');
+const entryComponents = require('./entry.config');
 
 const entries = entryComponents.reduce((entryList, item) => {
   if(item.js)
