@@ -1,20 +1,18 @@
 const express = require("express");
-const hct = require("./lib/hct");
+const hct = require("./dist/hct");
 const fs = require("fs");
 const app = express();
 const path = require('path');
 
 app.set("view engine", "html");
 
-// Serve static HTML files using the HTML commenting template engine
-/*
-app.get("*", (req, res) => {
+const hctRoute = (req, res) => {
   let pagePath = path.join('public', req.path, ".html").replace("/.html", ".html");
-  let contextPath = path.join('./public/js', req.path, "-ssr.js").replace("/-ssr.js", "-ssr.js");
+  //let contextPath = path.join('./public/js', req.path, "-ssr.js").replace("/-ssr.js", "-ssr.js");
 
   if (!fs.existsSync(pagePath)){
     pagePath = path.join('public', req.path, "index.html");
-    contextPath = path.join('./public/js', req.path, "index-ssr.js");
+    //contextPath = path.join('./public/js', req.path, "index-ssr.js");
     if (!fs.existsSync(pagePath)){
       res.status(404).send("Page not Found");
       return;
@@ -27,13 +25,18 @@ app.get("*", (req, res) => {
       return;
     }
 
-    const context = require(`./${contextPath}`) || {};
-    const renderedHtml = hct.render(html, context);
+    //const context = require(`./${contextPath}`) || {};
+    const renderedHtml = hct.render(html);
 
     res.send(renderedHtml);
   });
-});
-*/
+};
+
+// Serve static HTML files using the HTML commenting template engine
+app.get("/", hctRoute);
+
+app.get("/feed/", hctRoute);
+
 app.use(express.static("public"));
 
 // Start the server

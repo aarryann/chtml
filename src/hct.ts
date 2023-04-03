@@ -5,12 +5,13 @@ const BLOCK_END = "<!--{/";
 
 function render(html: string, context: any) {
   if(!context){
+    context = {};
     // if context is not provided, check whether context exists in page
     // extract the source and get it.
     html = html.replace(
       /<!--\{#context\s+src=(?<beginquote>['"])(?<src>.+?)(?<endquote>\1)\s+\/\}-->/g,
       (_match, _beginquote, src, _endquote) => {
-        context = require(src);
+        context = Object.assign( {}, context , require(src).context);
         return "";
       }
     );

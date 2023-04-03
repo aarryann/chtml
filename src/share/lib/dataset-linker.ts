@@ -56,6 +56,9 @@ DatasetLinker.viewSyncer = function (key: keyof IStateObject, state: IStateObjec
   const template = domDocument.querySelector(`template[data-re-dataset="${key}"]`);
   const container = domDocument.querySelector(`[data-re-container="${key}"]`);
   const dataset = state[key];
+  console.log('***************');
+  console.log(key);
+  console.log('$$$$$$$$$$$$$');
   let firstRun = false;
 
   if (!template || !container || !dataset) return;
@@ -99,6 +102,8 @@ DatasetLinker.syncAdditions = function (
   container: HTMLElement,
   firstRun: boolean
   ) {
+    console.log('++++++++++++++++');
+    console.log(dataset);
     dataset.forEach(row => {
     const clone = <HTMLElement>template.content.cloneNode(true);
 

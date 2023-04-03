@@ -1,18 +1,20 @@
 import { DatasetObserver } from '../../share/lib/dataset-observer';
 import { DatasetLinker } from '../../share/lib/dataset-linker';
-import * as FEED_DATA from '../../share/data/feed-data';
+import * as feed from '../../share/data/feed-data';
 import {ISessionUser, IChannelInputs, IDatasetObject} from 'index';
 
-if (!sessionStorage.getItem('user')) {
-  sessionStorage.clear();
-  const user: ISessionUser = {
-    name: 'Augustin Doughman',
-    organization: 'Accelor',
-    userId: '1',
-    orgId: '1',
-    lastLogin: '2022-06-17T11:23:00'
-  };
-  sessionStorage.setItem('user', JSON.stringify(user));
+if (typeof window !== 'undefined') {
+  if (sessionStorage && !sessionStorage.getItem('user')) {
+    sessionStorage.clear();
+    const user: ISessionUser = {
+      name: 'Augustin Doughman',
+      organization: 'Accelor',
+      userId: '1',
+      orgId: '1',
+      lastLogin: '2022-06-17T11:23:00'
+    };
+    sessionStorage.setItem('user', JSON.stringify(user));
+  }
 }
 
 function registerUtils(mk: string) {
@@ -34,7 +36,7 @@ function registerUtils(mk: string) {
 
 function registerFirstFeed() {
   registerUtils('feeds');
-  DatasetObserver.registerDataTrigger('feeds', structuredClone(FEED_DATA), DatasetLinker.viewSyncer);
+  DatasetObserver.registerDataTrigger('feeds', structuredClone(feed.FEED_DATA), DatasetLinker.viewSyncer);
 };
 
 function linkFeed(domDocument: Document) {
@@ -42,7 +44,7 @@ function linkFeed(domDocument: Document) {
   registerUtils(key);
   //const domDocument = htmlToDom(viewHTML);
 
-  DatasetObserver.registerDataTrigger(key, structuredClone(FEED_DATA), DatasetLinker.viewSyncer, domDocument);
+  DatasetObserver.registerDataTrigger(key, structuredClone(feed.FEED_DATA), DatasetLinker.viewSyncer, domDocument);
   return domDocument.body.innerHTML;
 };
 

@@ -12,7 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js --mode=development",
     "build": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js  --mode=production",
-    "watch": "webpack --watch --config res/webpack/webpack.dev.js"
+    "watch": "webpack --watch --config=res/webpack/webpack.common.js  --mode=development"
   },
   "dependencies": {
     "dotenv": "^16.0.3",

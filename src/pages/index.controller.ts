@@ -1,5 +1,4 @@
 export const context = {
-  title: "Home",
   showHeader: () => true,
   header: "Welcome to My Website",
   showSubheader: () => true,
@@ -9,5 +8,3 @@ export const context = {
   items: ["Item 1", "Item 2", "Item 3"],
   itemsLength: () => `There are ${context.items.length} items`,
 };
-
-//module.exports = context;
