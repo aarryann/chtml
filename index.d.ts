@@ -5,6 +5,16 @@ declare global {
     goCom: {
       mobileHome: Function;
     };
+    Components: {
+      listbox: Function;
+      menu: Function;
+      popoverGroup: Function;
+      popover: Function;
+      radioGroup: Function;
+      tabs: Function;
+      tab: Function;
+      tabPanel: Function;
+    };
     com: {
       go: {
         alpine: {
