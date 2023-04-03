@@ -1,9 +1,9 @@
-const feedAlpine = require("../../../lib/feeds/feeds-alpine");
+const feedAlpine = require("./main.feed");
 const jsdom = require("jsdom");
 
-const context = {
+export const context = {
   title: "Feeds",
-  linker: (html) =>{ 
+  linker: (html: string) =>{ 
     const { JSDOM } = jsdom;
     const dom = new JSDOM(html);
   
@@ -11,4 +11,4 @@ const context = {
   }
 };
 
-module.exports = context;
+//module.exports = context;

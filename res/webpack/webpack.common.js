@@ -4,7 +4,7 @@ const plugins = require('./plugins');
 const entry = require('./entries');
 const webpack = require('webpack'); // to access built-in plugins
 const { merge } = require('webpack-merge');
-const nodeExternals = require('webpack-node-externals');
+//const nodeExternals = require('webpack-node-externals');
 
 let generalConfig =  {
   resolve: {
@@ -16,7 +16,7 @@ let generalConfig =  {
   stats: { children: true },
   module: {
     rules: [
-      loaders.TSLoader,
+      //loaders.TSLoader,
       loaders.CSSLoader,
       loaders.FileLoader,
     ]
@@ -55,9 +55,13 @@ module.exports = (env, argv) => {
   } else{
     throw new Error('Specify Env');
   }
+  /*
   const nodeConfig = merge( generalConfig, {
     entry: entry.nodeEntries,
     target: 'node',
+    plugins:[
+      plugins.TranspilePlugin,
+    ],
     externals: [nodeExternals()],
     output: {
       filename: "[name].bundle.js",
@@ -66,7 +70,7 @@ module.exports = (env, argv) => {
       libraryExport: 'default',
     },
   });
-
+  */
   const browserConfig = merge( generalConfig, {
     entry: entry.browserEntries,
     target: 'web',
@@ -84,6 +88,7 @@ module.exports = (env, argv) => {
     },
   });
 
-  return [nodeConfig, browserConfig];
+  //return [nodeConfig, browserConfig];
+  return browserConfig;
 };
 

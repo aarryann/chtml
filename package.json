@@ -5,12 +5,13 @@
   "main": "server.js",
   "scripts": {
     "dev:man": "nodemon server.js",
+    "build:ts": "rimraf dist/ && tsc -p tsconfig.node.json",
     "pack": "./node_modules/.bin/webpack",
     "gen": "node res/scripts/gen.js",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run gen && webpack --config=res/webpack/webpack.common.js --mode=development",
-    "build": "npm run gen && webpack --config res/webpack/webpack.prod.js ",
+    "dev": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js --mode=development",
+    "build": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js  --mode=production",
     "watch": "webpack --watch --config res/webpack/webpack.dev.js"
   },
   "dependencies": {
@@ -46,11 +47,9 @@
     "stylelint-config-standard": "^31.0.0",
     "stylelint-webpack-plugin": "^4.1.0",
     "tailwindcss": "^3.2.7",
-    "ts-loader": "^9.4.2",
     "typescript": "^5.0.2",
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1",
-    "webpack-merge": "^5.8.0",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-merge": "^5.8.0"
   }
 }

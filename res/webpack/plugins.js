@@ -5,6 +5,9 @@ const _ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const _HtmlWebpackPlugin = require('html-webpack-plugin');
 const entryComponents = require('./entry.config');
+//const _TranspilePlugin = require('transpile-webpack-plugin');
+
+const isProd = process.argv.indexOf('--mode=production') >= 0;
 
 const MiniCssExtractPlugin = new _MiniCssExtractPlugin({
   filename: '[name].bundle.css',
@@ -32,11 +35,16 @@ const HtmlWebpackPlugin = entryComponents.browserEntry.reduce((entries, item) =>
       //template: path.join(__dirname, 'src', item.html),
       filename: `./${item.html}`,
       template: `./gen/${item.html}`,
+      minify: {
+        collapseWhitespace: isProd,
+        removeComments: false
+      }
     }));
   }
 	return entries;
 }, []);
 
+//const TranspilePlugin = new _TranspilePlugin();
 
 module.exports = {
   CleanWebpackPlugin: new CleanWebpackPlugin(),
@@ -44,4 +52,5 @@ module.exports = {
   StyleLintPlugin: StyleLintPlugin,
   ESLintPlugin: ESLintPlugin,
   HtmlWebpackPlugin: HtmlWebpackPlugin,
+  //TranspilePlugin: TranspilePlugin,
 };

@@ -10,6 +10,6 @@ const browserEntries = entryConf.browserEntry.reduce((entryList, item) => {
 
 module.exports = {
   browserEntries,
-  nodeEntries: entryConf.nodeEntry
+  //nodeEntries: entryConf.nodeEntry
 }
   

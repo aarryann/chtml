@@ -1,14 +1,14 @@
 
-const context = {
-  title: "Home",
+export const context = {
+  title: "About",
   showHeader: () => true,
-  header: "Welcome to My Website",
+  header: "Welcome to About",
   showSubheader: () => true,
-  subheader: "Check out these cool items-2:",
+  subheader: "About page:",
   showSubSubheader: () => true,
-  subsubheader: "And check these out too-3:",
+  subsubheader: "Good about:",
   items: ["Item 1", "Item 2", "Item 3"],
   itemsLength: () => `There are ${context.items.length} items`,
 };
 
-module.exports = context;
+//module.exports = context;
