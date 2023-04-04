@@ -213,7 +213,9 @@ DatasetLinker.setViewMapper = function (stateKey: string, domDocument: Document)
     const phrase = matchedPhrases[i].replaceAll("'", '"');
     // skip dataset or container node
     if (!phrase || phrase.indexOf('data-re-dataset') > 0 || phrase.indexOf('data-re-container') > 0) continue;
-    // setup filter format for multiple attributes for queryselectorall
+    // setup identifying key for the line containing phrases - filter format for multiple attributes for queryselectorall
+    // example input: data-re-content="fulldate(date)" data-re-datetime="date" data-re-src="avatar"   
+    // output: [data-re-content="fulldate(date)"][data-re-datetime="date"][data-re-src="avatar"]
     const filter = `[${phrase.replaceAll('" ', '"][')}]`;
     const mwArr = phrase.match(/data-re-[^\s]+"/g);
     if (!mwArr) continue;
