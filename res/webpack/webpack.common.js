@@ -84,8 +84,8 @@ module.exports = (env, argv) => {
       libraryTarget: 'umd',
       //globalObject: 'this',
       //libraryExport: 'default',
-      //umdNamedDefine: true,
-      library: 'go',
+      umdNamedDefine: true,
+      library: 'GO',
     },
   });
 

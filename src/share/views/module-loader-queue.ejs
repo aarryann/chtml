@@ -1,41 +1,30 @@
   <script defer type="text/javascript">
 
-    function downloadJS(b, script, type = "text/javascript") {
+    const loadJS = (b, script, type = "text/javascript") => {
       var element = document.createElement("script");
-      element.type = type;
-      element.src = script;
+      element.type = type, element.src = script;
       (b || document.body).appendChild(element);
-    }
-
-    function loadModules(b, q, t){
+    }, loadMultiple = (b, q, t) => {
       for (let i=0; i < q.length; i++) {
-        downloadJS(b, q[i], t);
+        loadJS(b, q[i], t);
       }
-    }
-
-    function fireEvent(){
+    }, fireEvent = () => {
       const event = new Event('afterQ');
       window.dispatchEvent(event);
-    }
-
-    function downloadJSAtOnload() {
+    }, loadQ = () => {
       const b = document.body;
       setTimeout(function(){
-        loadModules(b, scriptQLevel1);
-        loadModules(b, moduleQLevel1, "module");
+        loadMultiple(b, scriptQLevel1), loadMultiple(b, moduleQLevel1, "module");
         setTimeout(function(){
-          loadModules(b, moduleQLevel2, "module");
+          loadMultiple(b, moduleQLevel2, "module");
           setTimeout(function(){
-            loadModules(b, moduleQLevel3, "module");
-            fireEvent();
+            loadMultiple(b, moduleQLevel3, "module"), fireEvent();
           }, 200);
         }, 100);
       }, 0);
     }
-    if (window.addEventListener)
-      window.addEventListener("load", downloadJSAtOnload, false);
-    else if (window.attachEvent)
-      window.attachEvent("onload", downloadJSAtOnload);
-    else window.onload = downloadJSAtOnload;
+    if (window.addEventListener) window.addEventListener("load", loadQ, false);
+    else if (window.attachEvent) window.attachEvent("onload", loadQ);
+    else window.onload = loadQ;
 
   </script>

@@ -25,9 +25,8 @@
     </tr>
   </template>
 </table>
-<script type="module" src="js/main.bundle.js"></script>
 <script type="module">
-  window.addEventListener('afterQ', function(e){
+  window.addEventListener('afterQ', (e) => {
     const decorators = {
       labelize: (id) => `question-title-${id}`,
       uniqueFeedId: (id) => `feed-${id}`,
@@ -41,7 +40,7 @@
       shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
     };
     
-    go.ractfeeds(go.FEED_DATA_NEW, decorators);
+    GO.ractfeeds(GO.FEED_DATA_NEW, decorators);
   }, false);
   
 </script>
