@@ -1,23 +1,4 @@
 <script type="text/javascript" src="/js/ract-main.js"></script>
-<script src="/js/feeddatanew.bundle.f12e8f5c.js"></script>
-<script type="text/javascript">
-  const decorators = {
-    labelize: (id) => `question-title-${id}`,
-    uniqueFeedId: (id) => `feed-${id}`,
-    fulldate: (date) => new Date(date).toLocaleDateString('en-us', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }),
-    shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
-  };
-  
-  ractfeeds(go.FEED_DATA_NEW, decorators);
-  
-</script>
-
 <h1 class="sr-only">Feeds</h1>
 <table style="width:100%; border:solid 1px #ededed">
   <th>
@@ -45,3 +26,21 @@
     </tr>
   </template>
 </table>
+<script src="/js/feeddatanew.bundle.f12e8f5c.js"></script>
+<script type="text/javascript">
+  const decorators = {
+    labelize: (id) => `question-title-${id}`,
+    uniqueFeedId: (id) => `feed-${id}`,
+    fulldate: (date) => new Date(date).toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
+  };
+  
+  ractfeeds(go.FEED_DATA_NEW, decorators);
+  
+</script>
