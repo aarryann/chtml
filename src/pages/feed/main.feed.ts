@@ -17,6 +17,10 @@ if (typeof window !== 'undefined') {
   }
 }
 
+function test(){
+  console.log('testing');
+}
+
 function registerUtils(mk: string) {
   let opts = { decorators: {}, data: {} };
   opts.decorators = {
@@ -52,4 +56,5 @@ export {
   registerUtils,
   registerFirstFeed,
   linkFeed,
+  test,
 };

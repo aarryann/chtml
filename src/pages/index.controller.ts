@@ -1,4 +1,5 @@
 export const context = {
+  title: "Home",
   showHeader: () => true,
   header: "Welcome to My Website",
   showSubheader: () => true,

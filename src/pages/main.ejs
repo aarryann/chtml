@@ -1,0 +1,47 @@
+<script type="text/javascript" src="/js/ract-main.js"></script>
+<script src="/js/feeddatanew.bundle.f12e8f5c.js"></script>
+<script type="text/javascript">
+  const decorators = {
+    labelize: (id) => `question-title-${id}`,
+    uniqueFeedId: (id) => `feed-${id}`,
+    fulldate: (date) => new Date(date).toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
+  };
+  
+  ractfeeds(go.FEED_DATA_NEW, decorators);
+  
+</script>
+
+<h1 class="sr-only">Feeds</h1>
+<table style="width:100%; border:solid 1px #ededed">
+  <th>
+    <td>id</td>
+    <td>avatar</td>
+    <td>author</td>
+    <td>date</a></td>
+    <td>title</td>
+    <td>post</td>
+    <td>likes</td>
+    <td>replies</td>
+    <td>views</td>
+  </th>
+  <template id="tpl_feeds" data-ract-id="ractfeeds">
+    <tr>
+      <td data-re-aria-labelledby="labelize(id)" data-re-content="labelize(id)"></td>
+      <td><img class="h-10 w-10 rounded-full" data-re-src="avatar" data-re-alt="author" /></td>
+      <td><a href="#" data-re-content="author" class="hover:underline"></a></td>
+      <td><a href="#" class="hover:underline"><time data-re-content="fulldate(date)" data-re-datetime="date"></time></a></td>
+      <td data-re-content="title"></td>
+      <td data-re-content="post"></td>
+      <td data-re-content="shortened(likes)"></td>
+      <td data-re-content="shortened(replies)"></td>
+      <td data-re-content="shortened(views)"></td>
+    </tr>
+  </template>
+</table>

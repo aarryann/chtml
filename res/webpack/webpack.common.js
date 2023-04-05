@@ -81,9 +81,9 @@ module.exports = (env, argv) => {
       filename: "js/[name].bundle.[contenthash:8].js",
       path: path.resolve(__dirname, "../../public"),
       libraryTarget: 'umd',
-      globalObject: 'this',
-      libraryExport: 'default',
-      umdNamedDefine: true,
+      //globalObject: 'this',
+      //libraryExport: 'default',
+      //umdNamedDefine: true,
       library: 'go',
     },
   });
