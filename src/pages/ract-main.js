@@ -107,3 +107,7 @@ function addRow(row, clone, decorator){
   );
   console.log(clone);
 }
+
+module.exports = {
+  ractfeeds
+}
