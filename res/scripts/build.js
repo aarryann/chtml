@@ -190,7 +190,7 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) =>
   const completePage = ejs.render(
     layout.data,
     Object.assign({}, templateConfig, {
-      body: pageContent,
+      slot: pageContent,
       filename: `${srcPath}/layout-${layoutName}`
     })
   );
@@ -198,7 +198,7 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) =>
   const fragmentPage = ejs.render(
     fragmentLayout.data,
     Object.assign({}, templateConfig, {
-      body: pageContent,
+      slot: pageContent,
       filename: `${srcPath}/layout-fragment`
     })
   );

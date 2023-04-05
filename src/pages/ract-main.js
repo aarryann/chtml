@@ -1,4 +1,3 @@
-"use strict";
 const ractTag = 'data-re-';
 /*
 <tr>
@@ -13,8 +12,7 @@ const ractTag = 'data-re-';
   <td data-re-content="shortened(views)"></td>
 </tr>
 */
-
-function ractfeeds(data, decorators) {
+export function ractfeeds(_data, _decorators) {
   const key = "ractfeeds";
   const template = document.querySelector(`template[data-ract-id="${key}"]`);
   const clone = template.content.cloneNode(true);
@@ -32,7 +30,7 @@ function ractfeeds(data, decorators) {
   let currentIndex = -1;
   codeScript = generateSetterCode(child, currentIndex, codeScript, lineageTag);
   console.log(codeScript);
-};
+}
 
 function generateSetterCode(node, currentIndex, codeScript, lineageTag){
   let i;
@@ -78,7 +76,7 @@ function generateSetterCode(node, currentIndex, codeScript, lineageTag){
   }
   return codeScript;
 }
-
+/*
 function addRow(row, clone, decorator){
   let id = row["id"]
   , avatar = row["avatar"]
@@ -107,7 +105,4 @@ function addRow(row, clone, decorator){
   );
   console.log(clone);
 }
-
-module.exports = {
-  ractfeeds
-}
+*/
