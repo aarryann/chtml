@@ -27,19 +27,21 @@
 </table>
 <script type="module" src="js/main.bundle.js"></script>
 <script type="module">
-  const decorators = {
-    labelize: (id) => `question-title-${id}`,
-    uniqueFeedId: (id) => `feed-${id}`,
-    fulldate: (date) => new Date(date).toLocaleDateString('en-us', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }),
-    shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
-  };
-  
-  go.ractfeeds(go.FEED_DATA_NEW, decorators);
+  window.addEventListener('afterQ', function(e){
+    const decorators = {
+      labelize: (id) => `question-title-${id}`,
+      uniqueFeedId: (id) => `feed-${id}`,
+      fulldate: (date) => new Date(date).toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      shortened: (qty) => (qty > 999999 ? `${qty / 1000000} M` : qty > 999 ? `${qty / 1000} K` : qty)
+    };
+    
+    go.ractfeeds(go.FEED_DATA_NEW, decorators);
+  }, false);
   
 </script>

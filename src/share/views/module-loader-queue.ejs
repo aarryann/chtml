@@ -7,23 +7,27 @@
       (b || document.body).appendChild(element);
     }
 
+    function loadModules(b, q, t){
+      for (let i=0; i < q.length; i++) {
+        downloadJS(b, q[i], t);
+      }
+    }
+
+    function fireEvent(){
+      const event = new Event('afterQ');
+      window.dispatchEvent(event);
+    }
+
     function downloadJSAtOnload() {
       const b = document.body;
       setTimeout(function(){
-        for (i=0; i < scriptQLevel1.length; i++) {
-          downloadJS(b, scriptQLevel1[i]);
-        }
-        for (i=0; i < moduleQLevel1.length; i++) {
-          downloadJS(b, moduleQLevel1[i], "module");
-        }
+        loadModules(b, scriptQLevel1);
+        loadModules(b, moduleQLevel1, "module");
         setTimeout(function(){
-          for (i=0; i < moduleQLevel2.length; i++) {
-            downloadJS(b, moduleQLevel2[i], "module");
-          }
+          loadModules(b, moduleQLevel2, "module");
           setTimeout(function(){
-            for (i=0; i < moduleQLevel3.length; i++) {
-              downloadJS(b, moduleQLevel3[i], "module");
-            }
+            loadModules(b, moduleQLevel3, "module");
+            fireEvent();
           }, 200);
         }, 100);
       }, 0);
