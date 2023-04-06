@@ -78,11 +78,11 @@ module.exports = (env, argv) => {
       ...plugins.HtmlWebpackPlugin,
     ],
     output: {
-      filename: "js/[name].bundle.[contenthash:8].js",
-      //filename: "js/[name].bundle.js",
+      //filename: "js/[name].bundle.[contenthash:8].js",
+      filename: "js/[name].bundle.js",
       path: path.resolve(__dirname, "../../public"),
       libraryTarget: 'umd',
-      umdNamedDefine: true,
+      //umdNamedDefine: true,
       library: 'GO',
     },
   });

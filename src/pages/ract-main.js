@@ -12,7 +12,8 @@ const ractTag = 'data-re-';
   <td data-re-content="shortened(views)"></td>
 </tr>
 */
-export function ractfeeds(_data, _decorators) {
+
+export function ractfeeds(data, decorator) {
   const key = "ractfeeds";
   const template = document.querySelector(`template[data-ract-id="${key}"]`);
   const clone = template.content.cloneNode(true);
@@ -25,14 +26,59 @@ export function ractfeeds(_data, _decorators) {
 
   //});
   //console.log(child);
+  getFunc(data, decorator, child);
+}
+
+function loadData(data, decorator, rootNode) {
+  const template = document.querySelector(`template[data-ract-id="${key}"]`);
+  const clone = template.content.cloneNode(true);
+
+  data.forEach(row => {
+    let  id = row["id"], 
+    author = row["author"], 
+    avatar = row["avatar"], 
+    date = row["date"], 
+    title = row["title"], 
+    post = row["post"], 
+    likes = row["likes"], 
+    replies = row["replies"], 
+    views = row["views"];
+    clone.children[0].setAttribute("aria-labelledby", decorator.labelize(id));
+    clone.children[0].innerHTML = decorator.labelize(id);
+    clone.children[1].children[0].setAttribute("src", avatar);
+    clone.children[1].children[0].setAttribute("alt", author);
+    clone.children[2].children[0].innerHTML = author;
+    clone.children[3].children[0].children[0].innerHTML = decorator.fulldate(date);
+    clone.children[3].children[0].children[0].setAttribute("datetime", date);
+    clone.children[4].innerHTML = title;
+    clone.children[5].innerHTML = post;
+    clone.children[6].innerHTML = decorator.shortened(likes);
+    clone.children[7].innerHTML = decorator.shortened(replies);
+    clone.children[8].innerHTML = decorator.shortened(views);
+
+    container.appendChild(clone);
+  });
+}
+
+
+
+function getFunc(data, decorator, node){
+  if(data.length == 0) return "";
   let codeScript = "";
-  let lineageTag = "";
-  let currentIndex = -1;
-  codeScript = generateSetterCode(child, currentIndex, codeScript, lineageTag);
+  for (const key in data[0]) {
+    // Do something with object[key]
+    codeScript += `  ${key} = row["${key}"], \n`;
+  }
+  codeScript = (`  let${codeScript};`).replace(", \n;", ";\n")
+                + generateSetterCode(node);
+  codeScript = `data.forEach(row => {console.log(row);\n${codeScript}});return clone;`;
+  let func = new Function('data', 'decorator', 'clone', codeScript);
+  let result = func(data, decorator, node);
+  console.log(result);
   console.log(codeScript);
 }
 
-function generateSetterCode(node, currentIndex, codeScript, lineageTag){
+function generateSetterCode(node, currentIndex = -1, codeScript = "", lineageTag = ""){
   let i;
   let nodePropList = node.attributes;
   let nodeProp, attribValue, attribName, formedValue;
@@ -56,12 +102,12 @@ function generateSetterCode(node, currentIndex, codeScript, lineageTag){
         // if its a function
         formedValue = `decorator.${attribValue}`;
       } else {
-        formedValue = `row.${attribValue}`;
+        formedValue = attribValue;
       }
       if(attribName === 'content'){
-        codeScript += `rootNode${lineageTag}.innerHTML = ${formedValue};`;
+        codeScript += `  clone${lineageTag}.innerHTML = ${formedValue};\n`;
       } else {
-        codeScript += `rootNode${lineageTag}.setAttribute("${attribName}", ${formedValue});`;
+        codeScript += `  clone${lineageTag}.setAttribute("${attribName}", ${formedValue});\n`;
       }
     }
   }

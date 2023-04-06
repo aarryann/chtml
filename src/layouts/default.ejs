@@ -7,7 +7,7 @@
 <body>
 <?- include('share/views/module-loader-init'); ?>
 <% for(var i=0; i < htmlWebpackPlugin.files.js.length; i++) {%>
-  <script type="text/javascript">scriptQLevel1.push("<%= htmlWebpackPlugin.files.js[i] %>");</script>
+  <script type="text/javascript">moduleQLevel1.push("<%= htmlWebpackPlugin.files.js[i] %>");</script>
 <% } %>
 <script type="text/javascript">
   moduleQLevel2.push("https://unpkg.com/htmx.org@1.7.0");

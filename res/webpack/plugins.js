@@ -28,9 +28,10 @@ const StyleLintPlugin = new _StyleLintPlugin({
 
 const HtmlWebpackPlugin = entryComponents.browserEntry.reduce((entries, item) => {
   if(item.html){
+    item.dependencies = item.dependencies || [];
     entries.push(new _HtmlWebpackPlugin({
       inject: false,
-      chunks: [item.handle],
+      chunks: [item.handle, ...item.dependencies],
       //filename: path.join(__dirname, 'public', item.html),
       //template: path.join(__dirname, 'src', item.html),
       filename: `./${item.html}`,
