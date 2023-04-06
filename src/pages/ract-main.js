@@ -1,4 +1,5 @@
-const ractTag = 'data-re-';
+const ractTag = 'data-ract-';
+const key = "ractfeeds";
 /*
 <tr>
   <td data-re-aria-labelledby="labelize(id)" data-re-content="labelize(id)"></td>
@@ -14,10 +15,6 @@ const ractTag = 'data-re-';
 */
 
 export function ractfeeds(data, decorator) {
-  const key = "ractfeeds";
-  const template = document.querySelector(`template[data-ract-id="${key}"]`);
-  const clone = template.content.cloneNode(true);
-  const child = clone.children[0];
   //data.forEach(row => {
     //ddRow( row, `${clone}`, decorators);
     //let func = new Function('row', 'clone', 'return `${clone}`;');
@@ -29,8 +26,18 @@ export function ractfeeds(data, decorator) {
   getFunc(data, decorator, child);
 }
 
-function loadData(data, decorator, rootNode) {
-  const template = document.querySelector(`template[data-ract-id="${key}"]`);
+export function generateTemplate(){
+  const template = document.querySelector(`template[data-ract-template="${key}"]`);
+  const clone = template.content.cloneNode(true);
+  const child = clone.children[0];
+  let dataFields ={}, decoratorShell = {};
+
+  getFunc(dataFields, decoratorShell, child);
+}
+
+function addData(data, decorator, rootNode) {
+  const container = document.querySelector(`[data-ract-container="${key}"]`);
+  const template = document.querySelector(`template[data-ract-template="${key}"]`);
   const clone = template.content.cloneNode(true);
 
   data.forEach(row => {
@@ -60,8 +67,6 @@ function loadData(data, decorator, rootNode) {
   });
 }
 
-
-
 function getFunc(data, decorator, node){
   if(data.length == 0) return "";
   let codeScript = "";
@@ -78,7 +83,7 @@ function getFunc(data, decorator, node){
   console.log(codeScript);
 }
 
-function generateSetterCode(node, currentIndex = -1, codeScript = "", lineageTag = ""){
+function generateSetterCode(node, dataShell, decoratorShell, currentIndex = -1, codeScript = "", lineageTag = ""){
   let i;
   let nodePropList = node.attributes;
   let nodeProp, attribValue, attribName, formedValue;
