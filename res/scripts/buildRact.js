@@ -12,6 +12,9 @@ const secretKey = process.env.SECRET1;
 let buildMode = process.env.BUILDMODE;
 const gen = process.env.BUILDFILE;
 const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const ractTag = 'data-ract-';
+const key = "ractfeeds";
 
 /**
  * Build the site
@@ -19,6 +22,12 @@ const jsdom = require("jsdom");
 const buildRact = (options = siteoptions || {}) => {
   log.info('Building site...');
   const startTime = process.hrtime();
+
+  const { srcPath, outputPath, cleanUrls, site, template, includefiles, excludefiles } = Object.assign( {}, 
+    { srcPath: './src', outputPath: './public', cleanUrls: true }, 
+    options.build, {site: options.site || {}}, {template: options.template || {}}
+  );
+
 
     // read all pages
     const files = glob.sync('**/*.@(ejs|html)', {
@@ -72,17 +81,24 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) =>
       pageContent = pageData.body;
   }
 
-  const { JSDOM } = jsdom;
   const dom = new JSDOM(pageContent);
 
-  const template = document.querySelector(`template[data-ract-template="${key}"]`);
-  const clone = template.content.cloneNode(true);
+  const tpl = dom.window.document.querySelector(`template[data-ract-template="${key}"]`);
+  if (!tpl){
+    log.info(`No template - ${file}...`);
+    return;
+  } else {
+    log.info(`Found template - ${file}...`);
+
+  }
+
+  const clone = tpl.content.cloneNode(true);
   const child = clone.children[0];
-  let dataFields ={}, decoratorShell = {};
 
-  pageContent = getFunc(dataFields, decoratorShell, child);
+  pageContent = getFunc(child);
+  console.log(`${fileData.dir}`);
 
-  fse.writeFileSync(`${fileData.dir}/${fileData.name}.ract.js`, pageContent);
+  fse.writeFileSync(`src/pages${fileData.dir}/${fileData.name}.ract.js`, pageContent);
 };
 
 function getFunc(node){
@@ -101,7 +117,7 @@ function getFunc(node){
 
 function generateSetterCode(node, dataFields, currentIndex = -1, codeScript = "", lineageTag = ""){
   let i;
-  let nodePropList = node.attributes;
+  let nodePropList = node.attributes || [];
   let nodeProp, attribValue, attribName, formedValue;
   if(currentIndex >= 0){
     lineageTag += `.children[${currentIndex}]`;
