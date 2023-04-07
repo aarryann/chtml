@@ -69,13 +69,14 @@ function addData(data, decorator, rootNode) {
 
 function getFunc(data, decorator, node){
   if(data.length == 0) return "";
-  let codeScript = "";
-  for (const key in data[0]) {
+  let codeScript = "", dataFields = new Set();
+  const setterCode = generateSetterCode(node, dataFields);
+
+  for (const key of dataFields) {
     // Do something with object[key]
     codeScript += `  ${key} = row["${key}"], \n`;
   }
-  codeScript = (`  let${codeScript};`).replace(", \n;", ";\n")
-                + generateSetterCode(node);
+  codeScript = (`  let${codeScript};`).replace(", \n;", ";\n") + setterCode;
   codeScript = `data.forEach(row => {console.log(row);\n${codeScript}});return clone;`;
   let func = new Function('data', 'decorator', 'clone', codeScript);
   let result = func(data, decorator, node);
@@ -83,11 +84,10 @@ function getFunc(data, decorator, node){
   console.log(codeScript);
 }
 
-function generateSetterCode(node, dataShell, decoratorShell, currentIndex = -1, codeScript = "", lineageTag = ""){
+function generateSetterCode(node, dataFields, currentIndex = -1, codeScript = "", lineageTag = ""){
   let i;
   let nodePropList = node.attributes;
   let nodeProp, attribValue, attribName, formedValue;
-  let found = false;
   if(currentIndex >= 0){
     lineageTag += `.children[${currentIndex}]`;
   }
@@ -97,10 +97,6 @@ function generateSetterCode(node, dataShell, decoratorShell, currentIndex = -1, 
     // if you find the ractTag, add it to generated code
     if(nodeProp.name.indexOf(ractTag) === 0){
       // for a node index, process only once
-      if(!found){
-        //lineageTag += `.children[${currentIndex}]`;
-        //found = true;
-      }
       attribValue = nodeProp.value;
       attribName = nodeProp.name.replace(ractTag, '');
       if(attribValue.indexOf('(') > 0){
@@ -108,6 +104,7 @@ function generateSetterCode(node, dataShell, decoratorShell, currentIndex = -1, 
         formedValue = `decorator.${attribValue}`;
       } else {
         formedValue = attribValue;
+        dataFields.add(attribValue);
       }
       if(attribName === 'content'){
         codeScript += `  clone${lineageTag}.innerHTML = ${formedValue};\n`;
@@ -119,11 +116,7 @@ function generateSetterCode(node, dataShell, decoratorShell, currentIndex = -1, 
   nodePropList = node.children;
   for(i=0; i < nodePropList.length; i++){
     nodeProp = nodePropList[i];
-    if(!found){
-      //lineageTag += `.children[${currentIndex}]`;
-      found = true;
-    }
-    codeScript = generateSetterCode(nodeProp, i, codeScript, lineageTag)
+    codeScript = generateSetterCode(nodeProp, dataFields, i, codeScript, lineageTag)
   }
   return codeScript;
 }

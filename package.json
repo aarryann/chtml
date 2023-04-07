@@ -8,11 +8,12 @@
     "build:ts": "rimraf dist/ && tsc -p tsconfig.node.json",
     "cp-assets": "rimraf public/assets && cp -R src/assets public/ && rimraf public/assets/css ",
     "pack": "./node_modules/.bin/webpack",
-    "gen": "node res/scripts/gen.js",
+    "gen:html": "node res/scripts/genHTML.js",
+    "gen:ract": "node res/scripts/genRact.js",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js --mode=development && npm run cp-assets",
-    "build": "npm run build:ts && npm run gen && webpack --config=res/webpack/webpack.common.js  --mode=production && npm run cp-assets",
+    "dev": "npm run build:ts && npm run gen:html && webpack --config=res/webpack/webpack.common.js --mode=development && npm run cp-assets",
+    "build": "npm run build:ts && npm run gen:html && webpack --config=res/webpack/webpack.common.js  --mode=production && npm run cp-assets",
     "watch": "webpack --watch --config=res/webpack/webpack.common.js  --mode=development"
   },
   "dependencies": {
