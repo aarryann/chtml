@@ -1,20 +1,14 @@
 require('dotenv').config();
 const fse = require('fs-extra');
 const path = require('path');
-const ejs = require('ejs');
-const marked = require('marked');
 const frontMatter = require('front-matter');
 const glob = require('glob');
 const log = require('./logger');
 const siteoptions = require('../conf/site.config');
-const { encrypt, decrypt } = require('./crypto');
-const secretKey = process.env.SECRET1;
-let buildMode = process.env.BUILDMODE;
-const gen = process.env.BUILDFILE;
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const ractTag = 'data-ract-';
-const key = "ractfeeds";
+const prettier = require("prettier");
 
 /**
  * Build the site
@@ -27,7 +21,6 @@ const buildRact = (options = siteoptions || {}) => {
     { srcPath: './src', outputPath: './public', cleanUrls: true }, 
     options.build, {site: options.site || {}}, {template: options.template || {}}
   );
-
 
     // read all pages
     const files = glob.sync('**/*.@(ejs|html)', {
@@ -52,56 +45,57 @@ const buildRact = (options = siteoptions || {}) => {
  * Build a single page
  */
 const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) => {
-  log.info(`building - ${file}...`);
   const fileData = path.parse(file);
+  const sourceFilePath = `${srcPath}/pages/${file}`;
+  const destFilePath = `${srcPath}/pages/${fileData.dir}/${fileData.name}.ract.js`;
 
-  // read page file
-  const data = fse.readFileSync(`${srcPath}/pages/${file}`, 'utf-8');
+  const templateMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
+  const outputExists = fse.existsSync(destFilePath);
+  const outputMtimeMs = outputExists ? fse.statSync(destFilePath).mtimeMs : 0;
 
-  // render page
-  const pageData = frontMatter(data);
-  const templateConfig = {
-    site,
-    page: pageData.attributes,
-    delimiter: template.delimiter
-  };
-
-  let pageContent;
-  const pageSlug = file.split(path.sep).join('-');
-
-  // generate page content according to file type
-  switch (fileData.ext) {
-      case '.html':
-      case '.ejs':
-      pageContent = ejs.render(pageData.body, Object.assign({}, templateConfig, {
-        filename: `${srcPath}/page-${pageSlug}`
-      }));
-      break;
-    default:
-      pageContent = pageData.body;
-  }
-
-  const dom = new JSDOM(pageContent);
-
-  const tpl = dom.window.document.querySelector(`template[data-ract-template="${key}"]`);
-  if (!tpl){
-    log.info(`No template - ${file}...`);
+  if (templateMtimeMs <= outputMtimeMs) {
+    log.info(`skipping ract - ${file}...`);
     return;
-  } else {
-    log.info(`Found template - ${file}...`);
-
   }
 
-  const clone = tpl.content.cloneNode(true);
-  const child = clone.children[0];
+  const data = fse.readFileSync(`${sourceFilePath}`, 'utf-8');
+  const pageData = frontMatter(data);
+  const dom = new JSDOM(pageData.body);
 
-  pageContent = getFunc(child);
-  console.log(`${fileData.dir}`);
+  const tplArr = dom.window.document.querySelectorAll(`template[${ractTag}template]`);
+  if (!tplArr){
+    return;
+  }
 
-  fse.writeFileSync(`src/pages${fileData.dir}/${fileData.name}.ract.js`, pageContent);
+  let clone, child, key, keyFound = false, tplAttr, tAtt;
+
+  let pageContent = "";
+  tplArr.forEach(tpl=>{
+    key = "";
+    keyFound = false;
+    tplAttr = tpl.attributes;
+    for(let i=0; i < tplAttr.length; i++){
+      tAtt = tplAttr[i];
+      if(tAtt.name === `${ractTag}template`){
+        key = tAtt.value;
+        keyFound = true;
+      }
+    }
+
+    if(!keyFound) return;
+    clone = tpl.content.cloneNode(true);
+    child = clone.children[0];
+    pageContent += getFunc(child, key);
+  })
+  if(pageContent.length === 0) return;
+
+  log.info(`building ract - ${file}...`);
+  pageContent = prettier.format(pageContent, { parser: 'babel' });
+
+  fse.writeFileSync(`${destFilePath}`, pageContent);
 };
 
-function getFunc(node){
+function getFunc(node, key){
   let codeScript = "", dataFields = new Set();
   const setterCode = generateSetterCode(node, dataFields);
 
@@ -109,8 +103,25 @@ function getFunc(node){
     // Do something with object[key]
     codeScript += `  ${key} = row["${key}"], \n`;
   }
-  codeScript = (`  let${codeScript};`).replace(", \n;", ";\n") + setterCode;
-  codeScript = `data.forEach(row => {console.log(row);\n${codeScript}});return clone;`;
+
+  codeScript = 
+   (`let${codeScript};`).replace(", \n;", ";\n\n") + setterCode;
+  
+  codeScript = 
+  `export function ${key}(data, decorator) {
+    ${key}AddData(data, decorator);
+  }
+  function ${key}AddData(data, decorator) {
+    const container = document.querySelector('[${ractTag}container="${key}"]');
+    const template = document.querySelector('template[${ractTag}template="${key}"]');
+    const clone = template.content.cloneNode(true);
+
+    data.forEach(row => {
+      ${codeScript}
+
+      container.appendChild(clone);
+    });
+  }`;
 
   return codeScript;
 }

@@ -1,0 +1,174 @@
+  <!-- If showHeader is true, render the header -->
+  <!--{#if showHeader}-->
+  <h1><!--{header}--></h1>
+  <!-- If showSubheader is true, render the subheader -->
+  <!--{#if showSubheader}-->
+  <h2><!--{subheader}--></h2>
+  <!-- Close the subheader if block is true -->
+  <!--{#if showSubSubheader}-->
+  <h3><!--{subsubheader}--></h3>
+  <!-- Close the subheader if block is true -->
+  <h3>Sub Sub after 3 </h3>
+  <!--{/if}-->
+  <h3>Sub after 2 </h3>
+  <!--{/if}-->
+  <!-- Close the header if block is true -->
+  <h3>after 1</h3>
+  <!--{/if}-->
+
+  <!-- Render each item in the items array -->
+  <ul>
+    <!--{#each items}-->
+    <li><!--{this}--></li>
+    <!-- Close the item block -->
+    <!--{/each}-->
+
+    <!-- Render the itemsLength block value -->
+    <!--{itemsLength}-->
+  </ul>
+
+const ractTag = 'data-ract-';
+const key = "ractfeeds";
+
+export function ractfeeds(data, decorator) {
+  addData(data, decorator, child);
+}
+
+function addData(data, decorator) {
+  const container = document.querySelector(`[data-ract-container="${key}"]`);
+  const template = document.querySelector(`template[data-ract-template="${key}"]`);
+  const clone = template.content.cloneNode(true);
+
+  <!--{#call linker}--><!--{/call}-->
+
+  data.forEach(row => {
+    let  avatar = row["avatar"], 
+    author = row["author"], 
+    date = row["date"], 
+    title = row["title"], 
+    post = row["post"];
+
+    clone.children[0].setAttribute("aria-labelledby", decorator.labelize(id));
+    clone.children[0].innerHTML = decorator.labelize(id);
+    clone.children[1].children[0].setAttribute("src", avatar);
+    clone.children[1].children[0].setAttribute("alt", author);
+    clone.children[2].children[0].innerHTML = author;
+    clone.children[3].children[0].children[0].innerHTML = decorator.fulldate(date);
+    clone.children[3].children[0].children[0].setAttribute("datetime", date);
+    clone.children[4].innerHTML = title;
+    clone.children[5].innerHTML = post;
+    clone.children[6].innerHTML = decorator.shortened(likes);
+    clone.children[7].innerHTML = decorator.shortened(replies);
+    clone.children[8].innerHTML = decorator.shortened(views);
+  });
+
+  data.forEach(row => {
+    let  id = row["id"], 
+    author = row["author"], 
+    avatar = row["avatar"], 
+    date = row["date"], 
+    title = row["title"], 
+    post = row["post"], 
+    likes = row["likes"], 
+    replies = row["replies"], 
+    views = row["views"];
+    clone.children[0].setAttribute("aria-labelledby", decorator.labelize(id));
+    clone.children[0].innerHTML = decorator.labelize(id);
+    clone.children[1].children[0].setAttribute("src", avatar);
+    clone.children[1].children[0].setAttribute("alt", author);
+    clone.children[2].children[0].innerHTML = author;
+    clone.children[3].children[0].children[0].innerHTML = decorator.fulldate(date);
+    clone.children[3].children[0].children[0].setAttribute("datetime", date);
+    clone.children[4].innerHTML = title;
+    clone.children[5].innerHTML = post;
+    clone.children[6].innerHTML = decorator.shortened(likes);
+    clone.children[7].innerHTML = decorator.shortened(replies);
+    clone.children[8].innerHTML = decorator.shortened(views);
+
+    container.appendChild(clone);
+  });
+}
+
+function getFunc(data, decorator, node){
+  if(data.length == 0) return "";
+  let codeScript = "", dataFields = new Set();
+  const setterCode = generateSetterCode(node, dataFields);
+
+  for (const key of dataFields) {
+    // Do something with object[key]
+    codeScript += `  ${key} = row["${key}"], \n`;
+  }
+  codeScript = (`  let${codeScript};`).replace(", \n;", ";\n") + setterCode;
+  codeScript = `data.forEach(row => {console.log(row);\n${codeScript}});return clone;`;
+  let func = new Function('data', 'decorator', 'clone', codeScript);
+  let result = func(data, decorator, node);
+  console.log(result);
+  console.log(codeScript);
+}
+
+function generateSetterCode(node, dataFields, currentIndex = -1, codeScript = "", lineageTag = ""){
+  let i;
+  let nodePropList = node.attributes;
+  let nodeProp, attribValue, attribName, formedValue;
+  if(currentIndex >= 0){
+    lineageTag += `.children[${currentIndex}]`;
+  }
+  // Loop through attributes and identify whether there are any ract attributes
+  for(i=0; i < nodePropList.length; i++){
+    nodeProp = nodePropList[i];
+    // if you find the ractTag, add it to generated code
+    if(nodeProp.name.indexOf(ractTag) === 0){
+      // for a node index, process only once
+      attribValue = nodeProp.value;
+      attribName = nodeProp.name.replace(ractTag, '');
+      if(attribValue.indexOf('(') > 0){
+        // if its a function
+        formedValue = `decorator.${attribValue}`;
+      } else {
+        formedValue = attribValue;
+        dataFields.add(attribValue);
+      }
+      if(attribName === 'content'){
+        codeScript += `  clone${lineageTag}.innerHTML = ${formedValue};\n`;
+      } else {
+        codeScript += `  clone${lineageTag}.setAttribute("${attribName}", ${formedValue});\n`;
+      }
+    }
+  }
+  nodePropList = node.children;
+  for(i=0; i < nodePropList.length; i++){
+    nodeProp = nodePropList[i];
+    codeScript = generateSetterCode(nodeProp, dataFields, i, codeScript, lineageTag)
+  }
+  return codeScript;
+}
+/*
+function addRow(row, clone, decorator){
+  let id = row["id"]
+  , avatar = row["avatar"]
+  , author = row["author"]
+  , date = row["date"]
+  , title = row["title"]
+  , post = row["post"]
+  , likes = row["likes"]
+  , replies = row["replies"]
+  , views = row["views"];
+
+  let val;
+  clone = clone.replace(
+    /data-re-(?<attrib>[^="']+).{1,2}(?<value>[^\s"'\(]+).(?<param>[^\s\)"'>]+)?["'\)]{0,2}/g,
+    (match, attrib, value, param) => {
+      // if param, its a function
+      if(param){
+        val = `${attrib}="${decorator[value](row[param])}"`;
+      }else{
+        val = `${attrib}="${row[value]}"`;
+      }
+
+      //console.log(`${match} ${val}`);
+      return `${match} ${val}`;
+    }
+  );
+  console.log(clone);
+}
+*/

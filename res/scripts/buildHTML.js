@@ -131,7 +131,7 @@ const _loadLayout = (layout, pluginDir, { srcPath }) => {
  * Build a single page
  */
 const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) => {
-  log.info(`building - ${file}...`);
+  log.info(`building gen - ${file}...`);
   const fileData = path.parse(file);
   // render complete page as well as page fragment for full loading vs partial (htmx) loading
   const pluginDir = fileData.dir.split('/')[0];

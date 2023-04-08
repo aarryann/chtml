@@ -1,3 +1,64 @@
 <!--{#context src="./pages/about/index.controller" /}-->
 This is about page
 <?- include('share/views/sample'); ?>
+
+<h1 class="sr-only">Feeds</h1>
+<table style="width:100%; border:solid 1px #ededed" data-ract-container="ractabout">
+  <th>
+    <td>id</td>
+    <td>avatar</td>
+    <td>author</td>
+    <td>date</a></td>
+    <td>title</td>
+    <td>post</td>
+    <td>likes</td>
+    <td>replies</td>
+    <td>views</td>
+  </th>
+  <template id="tpl_feeds" data-ract-template="ractabout">
+    <tr>
+      <td data-ract-aria-labelledby="labelize(id)" data-ract-content="labelize(id)"></td>
+      <td><img class="h-10 w-10 rounded-full" data-ract-src="avatar" data-ract-alt="author" /></td>
+      <td><a href="#" data-ract-content="author" class="hover:underline"></a></td>
+      <td><a href="#" class="hover:underline"><time data-ract-content="fulldate(date)" data-ract-datetime="date"></time></a></td>
+      <td data-ract-content="title"></td>
+      <td data-ract-content="post"></td>
+      <td data-ract-content="shortened(likes)"></td>
+      <td data-ract-content="shortened(replies)"></td>
+      <td data-ract-content="shortened(views)"></td>
+    </tr>
+  </template>
+</table>
+<table style="width:100%; border:solid 1px #ededed" data-ract-container="testabout">
+  <th>
+    <td>id</td>
+    <td>avatar</td>
+    <td>author</td>
+    <td>date</a></td>
+    <td>title</td>
+    <td>post</td>
+    <td>likes</td>
+    <td>replies</td>
+    <td>views</td>
+  </th>
+  <template id="tpl_feeds" data-ract-template="testabout">
+    <tr>
+      <td data-ract-aria-labelledby="labelize(id)" data-ract-content="labelize(id)"></td>
+      <td><img class="h-10 w-10 rounded-full" data-ract-src="avatar" data-ract-alt="author" /></td>
+      <td><a href="#" data-ract-content="author" class="hover:underline"></a></td>
+      <td><a href="#" class="hover:underline"><time data-ract-content="fulldate(date)" data-ract-datetime="date"></time></a></td>
+      <td data-ract-content="title"></td>
+      <td data-ract-content="post"></td>
+      <td data-ract-content="shortened(likes)"></td>
+      <td data-ract-content="shortened(replies)"></td>
+      <td data-ract-content="shortened(views)"></td>
+    </tr>
+  </template>
+</table>
+
+<script>
+  window.addEventListener('afterQ', (e) => {
+    GO.callRact();
+  }, false);
+  
+</script>
