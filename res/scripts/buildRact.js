@@ -141,6 +141,11 @@ function generateSetterCode(node, dataFields, currentIndex = -1, codeScript = ""
       if(attribValue.indexOf('(') > 0){
         // if its a function
         formedValue = `decorator.${attribValue}`;
+        attribValue.split(/[\(\),]/).forEach((val, j)=>{
+          if(val.length > 0 && j > 0){
+            dataFields.add(val);
+          }
+        })
       } else {
         formedValue = attribValue;
         dataFields.add(attribValue);

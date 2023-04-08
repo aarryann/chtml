@@ -4,7 +4,6 @@ const plugins = require('./plugins');
 const entry = require('./entries');
 const webpack = require('webpack'); // to access built-in plugins
 const { merge } = require('webpack-merge');
-//const nodeExternals = require('webpack-node-externals');
 
 let generalConfig =  {
   resolve: {
@@ -16,7 +15,6 @@ let generalConfig =  {
   stats: { children: true },
   module: {
     rules: [
-      //loaders.TSLoader,
       loaders.CSSLoader,
       loaders.FileLoader,
     ]
@@ -33,6 +31,9 @@ let generalConfig =  {
     new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     plugins.MiniCssExtractPlugin,
   ],
+  cache: {
+    type: 'filesystem'
+  },
 };
 
 module.exports = (env, argv) => {
@@ -55,22 +56,6 @@ module.exports = (env, argv) => {
   } else{
     throw new Error('Specify Env');
   }
-  /*
-  const nodeConfig = merge( generalConfig, {
-    entry: entry.nodeEntries,
-    target: 'node',
-    plugins:[
-      plugins.TranspilePlugin,
-    ],
-    externals: [nodeExternals()],
-    output: {
-      filename: "[name].bundle.js",
-      path: path.resolve(__dirname, "../../node"),
-      libraryTarget: 'umd',
-      libraryExport: 'default',
-    },
-  });
-  */
   const browserConfig = merge( generalConfig, {
     entry: entry.browserEntries,
     target: 'web',
@@ -78,16 +63,14 @@ module.exports = (env, argv) => {
       ...plugins.HtmlWebpackPlugin,
     ],
     output: {
-      //filename: "js/[name].bundle.[contenthash:8].js",
-      filename: "js/[name].bundle.js",
+      filename: "js/[name].bundle.[contenthash:8].js",
+      //filename: "js/[name].bundle.js",
       path: path.resolve(__dirname, "../../public"),
       libraryTarget: 'umd',
-      //umdNamedDefine: true,
       library: 'GO',
     },
   });
 
-  //return [nodeConfig, browserConfig];
   return browserConfig;
 };
 

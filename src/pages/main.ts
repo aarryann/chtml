@@ -1,4 +1,4 @@
-import { ractfeeds } from "./ract-main";
+import { ractfeeds } from "./main.ract";
 import { FEED_DATA_NEW } from "../share/data/feed-data-new";
 
 export function func() {
