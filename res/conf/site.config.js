@@ -1,9 +1,11 @@
 module.exports = {
   build: {
     srcPath: './src',
-    outputPath: './gen',
+    outPath: './public',
     includefiles: [],
-    excludefiles: []  
+    excludefiles: [],
+    regen: false,
+    cleanUrls: true
   },
   template:{
     delimiter: '?'

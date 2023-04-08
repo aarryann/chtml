@@ -15,100 +15,45 @@ const gen = process.env.BUILDFILE;
  * Build the site
  */
 const build = (options = siteoptions || {}) => {
-  log.info('Building site...');
+  log.info('Building gen...');
   const startTime = process.hrtime();
 
-  let lastGenDate,
-    genTime = new Date(),
-    genCount = 0;
+  const { build: {srcPath, outPath, regen, cleanUrls, includefiles, excludefiles}, site 
+    , template: {delimiter} } 
+    = {
+      build: Object.assign({}, siteoptions.build, options.build),
+      site: Object.assign({}, siteoptions.site, options.site),
+      template: Object.assign({}, siteoptions.template, options.template)
+    };
   
-  const { srcPath, outputPath, cleanUrls, site, template, includefiles, excludefiles } = Object.assign( {}, 
-    { srcPath: './src', outputPath: './public', cleanUrls: true }, 
-    options.build, {site: options.site || {}}, {template: options.template || {}}
-  );
+  // clear destination folder when REGEN
+  if (regen) {
+    fse.emptyDirSync(outPath);
 
-  // buildMode: full- build all files, incremental- build incremental since last build, &
-  // buildMode: keyonly- build no files, only generate the last gen time key
-  // for incremental builds read last gen time key to get last build time
-  if (buildMode === 'incremental') {
-    try {
-      if (fse.existsSync(`${outputPath}/${gen}`)) {
-        let hash = fse.readFileSync(`${outputPath}/${gen}`, 'utf-8');
-        let decryptedGenTime = decrypt(JSON.parse(hash), secretKey);
-        lastGenDate = new Date(Number(decryptedGenTime));
-      } else {
-        // full build if first build
-        buildMode = 'full';
-      }
-    } catch {
-      buildMode = 'full';
-    }
-  }
-
-  // clear destination folder when full build
-  if (buildMode === 'full') {
-    fse.emptyDirSync(outputPath);
-  }
-
-  // keyonly build does not build pages, only creates or refreshes last gen time key
-  // useful when changing the last gen time key without rebuilding any files
-  // TODO: Add keyonly in documentation
-  if (buildMode !== 'keyonly') {
-    // copy assets folder for every build
     if (fse.existsSync(`${srcPath}/assets`)) {
-      fse.mkdirsSync(`${outputPath}/assets`);
-      fse.copySync(`${srcPath}/assets`, `${outputPath}/assets`);
+      fse.mkdirsSync(`${outPath}/assets`);
+      fse.copySync(`${srcPath}/assets`, `${outPath}/assets`);
     }
-
-    // read all pages
-    const files = glob.sync('**/*.@(md|ejs|html)', {
-      cwd: `${srcPath}/pages`,
-      ignore: ['**/layouts/**', '**/components/**', '**/js/**']
-    });
-
-    // Build selective pages only on build signal
-    // if build signal, increment build count then build page
-    // Note: genCount in middle and not after buildPage because _buildPage does not return anything
-    files.forEach(
-      file =>
-        //console.log(`************${file}`) &&
-        _generate(`${srcPath}/pages/${file}`, lastGenDate, includefiles, excludefiles) &&
-        ++genCount &&
-        _buildPage(file, { srcPath, outputPath, cleanUrls, site, template })
-    );
+    log.info(`Copied ${srcPath}/assets to ${outPath}/assets`);
+  } else {
+    _copyFolderRecursive(`${srcPath}/assets`, `${outPath}/assets`);
   }
 
-  // Create or refresh last gen time key as encrypted for next incremental build
-  const hash = encrypt(genTime.getTime().toString(), secretKey);
-  fse.writeFileSync(`${outputPath}/${gen}`, JSON.stringify(hash));
+  // read all pages
+  const files = glob.sync('**/*.@(md|ejs|html)', {
+    cwd: `${srcPath}/pages`,
+    ignore: ['**/layouts/**', '**/components/**', '**/js/**']
+  });
+
+  files.forEach(
+    file =>
+      _buildPage(file, { srcPath, outPath, cleanUrls, site, delimiter })
+  );
 
   // display build time
   const timeDiff = process.hrtime(startTime);
   const duration = timeDiff[0] * 1000 + timeDiff[1] / 1e6;
-  log.success(`Site built succesfully in ${duration}ms for ${genCount} pages`);
-};
-
-/**
- * generate build signal
- */
-const _generate = (file, lastGenDate, includefiles, excludefiles) => {
-  // Skip if current file is not in selected file list
-  let gen = includefiles.length === 0 || (includefiles.length > 0 && includefiles.includes(file));
-  // skip and return if false build signal
-  if (gen == false) return gen;
-
-  // Skip if current file is in excluded file list
-  gen = excludefiles.length === 0 || (excludefiles.length > 0 && !excludefiles.includes(file));
-  // skip and return if false build signal
-  if (gen == false) return gen;
-
-  // Skip if current file is not newer than last generation time for incremental build
-  gen =
-    buildMode === 'full' ||
-    (buildMode === 'incremental' && fse.statSync(file).mtime.getTime() >= lastGenDate.getTime());
-
-  // return build signal
-  return gen;
+  log.success(`Site built succesfully in ${duration}ms`);
 };
 
 /**
@@ -127,21 +72,59 @@ const _loadLayout = (layout, pluginDir, { srcPath }) => {
   return { file, data };
 };
 
+function _copyFolderRecursive(sourceDir, destDir) {
+  // Ensure that the destination folder exists
+  fse.mkdirSync(destDir, { recursive: true });
+
+  const files = fse.readdirSync(sourceDir);
+  for (const file of files) {
+    const sourcePath = path.join(sourceDir, file);
+    const destPath = path.join(destDir, file);
+
+    if (fse.statSync(sourcePath).isDirectory()) {
+      _copyFolderRecursive(sourcePath, destPath);
+    } else {
+      const sourceMtimeMs = fse.statSync(sourcePath).mtimeMs;
+      const destExists = fse.existsSync(destPath);
+      const destMtimeMs = destExists ? fse.statSync(destPath).mtimeMs : 0;
+
+      if (!destExists || sourceMtimeMs > destMtimeMs) {
+        fse.copyFileSync(sourcePath, destPath);
+        log.info(`Copied ${sourcePath} to ${destPath}`);
+      }
+    }
+  }
+}
+
 /**
  * Build a single page
  */
-const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) => {
-  log.info(`building gen - ${file}...`);
+const _buildPage = (file, { srcPath, outPath, cleanUrls, site, delimiter, regen }) => {
   const fileData = path.parse(file);
   // render complete page as well as page fragment for full loading vs partial (htmx) loading
   const pluginDir = fileData.dir.split('/')[0];
-  let destPath = path.join(outputPath, fileData.dir);
-  let fragmentPath = path.join(outputPath, 'views', fileData.dir);
+  const sourceFilePath = `${srcPath}/pages/${file}`;
 
+  let destPath = path.join(outPath, fileData.dir);
+  let fragmentPath = path.join(outPath, 'views', fileData.dir);
   // create extra dir if generating clean URLs and filename is not index
   if (cleanUrls && fileData.name !== 'index') {
     destPath = path.join(destPath, fileData.name);
     fragmentPath = path.join(fragmentPath, fileData.name);
+  }
+
+  let destFilePath = `${destPath}.html`;
+  if (cleanUrls) {
+    destFilePath = `${destPath}/index.html`;
+  }
+
+  const templateMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
+  const outputExists = fse.existsSync(destFilePath);
+  const outputMtimeMs = outputExists ? fse.statSync(destFilePath).mtimeMs : 0;
+
+  if (!regen && templateMtimeMs <= outputMtimeMs) {
+    log.info(`skipping gen - ${file}...`);
+    return;
   }
 
   // create destination directory
@@ -156,7 +139,7 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) =>
   const templateConfig = {
     site,
     page: pageData.attributes,
-    delimiter: template.delimiter
+    delimiter
   };
 
   let pageContent;
@@ -205,6 +188,7 @@ const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) =>
 
   // save the html file with both full layout and without layout (fragments)
   // The fragment files will be used for HTMX ajax pull of files in navigation
+  log.info(`building gen - ${file}...`);
   if (cleanUrls) {
     fse.writeFileSync(`${destPath}/index.html`, completePage);
     fse.writeFileSync(`${fragmentPath}/index.html`, fragmentPage);

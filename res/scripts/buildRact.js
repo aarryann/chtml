@@ -14,26 +14,23 @@ const prettier = require("prettier");
  * Build the site
  */
 const buildRact = (options = siteoptions || {}) => {
-  log.info('Building site...');
+  log.info('Building ract...');
   const startTime = process.hrtime();
 
-  const { srcPath, outputPath, cleanUrls, site, template, includefiles, excludefiles } = Object.assign( {}, 
-    { srcPath: './src', outputPath: './public', cleanUrls: true }, 
-    options.build, {site: options.site || {}}, {template: options.template || {}}
+  const { build: {srcPath, outPath, regen}} 
+    = {
+      build: Object.assign({}, siteoptions.build, options.build),
+    };
+  
+  // read all pages
+  const files = glob.sync('**/*.@(ejs|html)', {
+    cwd: `${srcPath}/pages`,
+    ignore: ['**/layouts/**', '**/components/**', '**/js/**']
+  });
+
+  files.forEach(file =>
+    _buildPage(file, { srcPath, outPath, regen })
   );
-
-    // read all pages
-    const files = glob.sync('**/*.@(ejs|html)', {
-      cwd: `${srcPath}/pages`,
-      ignore: ['**/layouts/**', '**/components/**', '**/js/**']
-    });
-
-    // Build selective pages only on build signal
-    // if build signal, increment build count then build page
-    // Note: genCount in middle and not after buildPage because _buildPage does not return anything
-    files.forEach(file =>
-      _buildPage(file, { srcPath, outputPath, cleanUrls, site, template })
-    );
 
   // display build time
   const timeDiff = process.hrtime(startTime);
@@ -44,16 +41,16 @@ const buildRact = (options = siteoptions || {}) => {
 /**
  * Build a single page
  */
-const _buildPage = (file, { srcPath, outputPath, cleanUrls, site, template }) => {
+const _buildPage = (file, { srcPath, outPath, regen }) => {
   const fileData = path.parse(file);
   const sourceFilePath = `${srcPath}/pages/${file}`;
-  const destFilePath = `${srcPath}/pages/${fileData.dir}/${fileData.name}.ract.js`;
+  const destFilePath = `${outPath}/pages/${fileData.dir}/${fileData.name}.ract.js`;
 
   const templateMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
   const outputExists = fse.existsSync(destFilePath);
   const outputMtimeMs = outputExists ? fse.statSync(destFilePath).mtimeMs : 0;
 
-  if (templateMtimeMs <= outputMtimeMs) {
+  if (!regen && templateMtimeMs <= outputMtimeMs) {
     log.info(`skipping ract - ${file}...`);
     return;
   }
