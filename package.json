@@ -12,7 +12,7 @@
     "gen:ract": "node res/scripts/genRact.js",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run build:ts && npm run gen:html && npm run gen:ract && webpack --config=res/webpack/webpack.config.js --mode=development && npm run cp-assets",
+    "dev": "npm run build:ts && npm run gen:html && webpack --config=res/webpack/webpack.config.js --mode=development && npm run cp-assets",
     "build": "npm run build:ts && npm run gen:html && webpack --config=res/webpack/webpack.config.js  --mode=production && npm run cp-assets",
     "watch": "webpack --watch --config=res/webpack/webpack.config.js  --mode=development"
   },

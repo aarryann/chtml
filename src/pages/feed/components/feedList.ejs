@@ -3,7 +3,7 @@
 
   </script>
   <h1 class="sr-only">Network feeds</h1>
-    <!--{#call linker}-->
+    <!--{#databind getFeedDataset}-->
     <ul role="list" class="space-y-4" data-re-container="feeds">
     <template id="question-template" data-re-dataset="feeds">
       <li data-re-data-uid="uniqueFeedId(id)" class="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg">
@@ -117,4 +117,4 @@
       </li>
     </template>
   </ul>
-  <!--{/call}-->
+  <!--{/databind}-->

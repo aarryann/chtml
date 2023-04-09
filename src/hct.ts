@@ -60,9 +60,9 @@ function parse(template: string | undefined, context: any) : string {
   // Replace each placeholder with its value from the context object
   let html = template || "";
 
-  // Replace each #call block with its rendered contents from execution of called function
+  // Replace each #databind block with its rendered contents from execution of called function
   html = html.replace(
-    /call (.+?)\}-->([\s\S]*?)<!--\{\/call\}-->/g,
+    /databind (.+?)\}-->([\s\S]*?)<!--\{\/databind\}-->/g,
     (_match, callee, fragment) => {
       // Invoke the function, pass the enclosed HTML as argument and render the returned value
       return context[callee](fragment);

@@ -1,13 +1,13 @@
-const feedAlpine = require("./main.feed");
+const feedAlpine = require("./index.feed");
 const jsdom = require("jsdom");
 
 export const context = {
   title: "Feeds",
-  linker: (html: string) =>{ 
+  getFeedDataset: (html: string) =>{ 
     const { JSDOM } = jsdom;
     const dom = new JSDOM(html);
   
-    return feedAlpine.linkFeed(dom.window.document) 
+    return feedAlpine.dataBind(dom.window.document) 
   }
 };
 

@@ -43,7 +43,7 @@ function registerFirstFeed() {
   DatasetObserver.registerDataTrigger('feeds', structuredClone(feed.FEED_DATA), DatasetLinker.viewSyncer);
 };
 
-function linkFeed(domDocument: Document) {
+function dataBind(domDocument: Document) {
   const key = 'feeds';
   registerUtils(key);
   //const domDocument = htmlToDom(viewHTML);
@@ -55,6 +55,6 @@ function linkFeed(domDocument: Document) {
 export {
   registerUtils,
   registerFirstFeed,
-  linkFeed,
+  dataBind,
   test,
 };
