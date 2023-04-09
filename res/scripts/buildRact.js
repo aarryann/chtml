@@ -111,12 +111,14 @@ function getFunc(node, key){
   function ${key}AddData(data, decorator) {
     const container = document.querySelector('[${ractTag}container="${key}"]');
     const template = document.querySelector('template[${ractTag}template="${key}"]');
-    const clone = template.content.cloneNode(true);
+    let clone, rootNode;
 
     data.forEach(row => {
+      clone = template.content.cloneNode(true);
+      rootNode = clone.children[0];
       ${codeScript}
 
-      container.appendChild(clone);
+      container.appendChild(rootNode);
     });
   }`;
 
@@ -151,9 +153,9 @@ function generateSetterCode(node, dataFields, currentIndex = -1, codeScript = ""
         dataFields.add(attribValue);
       }
       if(attribName === 'content'){
-        codeScript += `  clone${lineageTag}.innerHTML = ${formedValue};\n`;
+        codeScript += `  rootNode${lineageTag}.innerHTML = ${formedValue};\n`;
       } else {
-        codeScript += `  clone${lineageTag}.setAttribute("${attribName}", ${formedValue});\n`;
+        codeScript += `  rootNode${lineageTag}.setAttribute("${attribName}", ${formedValue});\n`;
       }
     }
   }
