@@ -3,19 +3,36 @@
   "version": "1.0.0",
   "description": "Example of using HTML commenting template engine with Express.js server",
   "main": "server.js",
+  "watch": {
+    "gen:html": {
+      "patterns": ["src/pages"],
+      "extensions": "html,ejs"
+    },
+    "gen:ract": {
+      "patterns": ["src/pages"],
+      "extensions": "html,ejs"
+    },
+    "build:ts": {
+      "patterns": ["src,server"],
+      "extensions": "ts,js"
+    },
+    "build:wp": {
+      "patterns": ["dist,src"]
+    }
+  },
   "scripts": {
-    "start": "node ssr/server.js",
-    "dev": "nodemon -w dist -w public dist/server/index.js",
+    "start": "npm run build && node dist/server/index.js",
+    "dev": "npm run build && nodemon -w dist -w public dist/server/index.js",
     "build": "npm run build:ts && npm run build:wp && npm run build:assets",
+    "build:tw": "postcss styles/tailwind.css -o public/assets/css/tailwind.css",
     "build:ts": "node res/scripts/genRact.js f && tsc -p tsconfig.server.json && tsc -p tsconfig.app.json",
     "build:wp": "webpack --config=res/webpack/webpack.config.js --mode=development",
-    "build:assets": "rimraf public/assets && cp -R src/assets public/ && rimraf public/assets/css ",
+    "build:assets": "rimraf public/assets && cp -R src/assets public/ ",
     "gen:html": "node res/scripts/genHTML.js",
     "gen:ract": "node res/scripts/genRact.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "npm-run-all --parallel watch:ts-app watch:ts-server watch:wp",
-    "watch:ts-app": "tsc -w -p tsconfig.app.json",
-    "watch:ts-server": "tsc -w -p tsconfig.server.json",
+    "watch:ts": "npm-watch",
     "watch:wp": "webpack --watch --config=res/webpack/webpack.config.js  --mode=development"
   },
   "dependencies": {
@@ -42,6 +59,7 @@
     "mini-css-extract-plugin": "^2.7.5",
     "nodemon": "^2.0.21",
     "npm-run-all": "^4.1.5",
+    "npm-watch": "^0.11.0",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.1.0",
