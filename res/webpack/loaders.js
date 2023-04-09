@@ -1,12 +1,17 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-/*
+
 const TSLoader = {
   test: /\.ts?$/,
-  use: 'ts-loader',
+  use: [{
+    loader: 'ts-loader',
+    options: {
+      configFile: "../../tsconfig.node.json"
+    }
+  }],
   exclude: /node_modules/,
 };
-*/
+
 const CSSLoader = {
   test: /\.css$/i,
   exclude: /node_modules/,
@@ -14,7 +19,7 @@ const CSSLoader = {
     {
       loader: MiniCssExtractPlugin.loader,
       options: {
-        publicPath: path.resolve(__dirname, '../../public/css/')
+        publicPath: path.resolve(__dirname, '../../public/assets/css/')
       }
     },
     {
@@ -47,6 +52,6 @@ const FileLoader = {
 
 module.exports = {
   CSSLoader: CSSLoader,
-  //TSLoader: TSLoader,
+  TSLoader: TSLoader,
   FileLoader: FileLoader,
 };

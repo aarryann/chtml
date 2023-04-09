@@ -1,10 +1,11 @@
-export function <!--{ractkey}-->(data: Array<any>, decorator: Object) {
-  <!--{ractkey}-->AddData(data, decorator);
+export function <!--{ractkey}-->(data: Array<any>, decorator: Object, doc: Document = document) {
+  <!--{ractkey}-->AddData(data, decorator, doc);
 }
 
-function <!--{ractkey}-->AddData(data: Array<any>, decorator: any) {
-  const container = document.querySelector('[data-ract-container="<!--{ractkey}-->"]');
-  const template = <HTMLTemplateElement>document.querySelector(
+function <!--{ractkey}-->AddData(data: Array<any>, decorator: any, doc: Document = document) {
+  const domDocument = doc || document;
+  const container = domDocument.querySelector('[data-ract-container="<!--{ractkey}-->"]');
+  const template = <HTMLTemplateElement>domDocument.querySelector(
     'template[data-ract-template="<!--{ractkey}-->"]'
   );
 

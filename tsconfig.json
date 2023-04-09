@@ -32,6 +32,6 @@
     },
     "outDir": "dist",
   },
-  "include": ["**/*.ts", "src/**/*.js"],
-  "exclude": ["node_modules", "node", "dist", "gen", "res/scripts", "src/assets", "public"]
+  "include": ["/**/*.ts"],
+  "exclude": ["node_modules", "node", "dist", "gen", "res/scripts", "ssr", "src/assets", "public"]
 }

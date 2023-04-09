@@ -21,7 +21,7 @@ const browserEntry = [
   {
     "handle": "tailwind", 
     "dependencies": [],
-    "css": "/src/main.css"
+    "css": "/src/assets/css/tailwind.css"
   },
 ];
 

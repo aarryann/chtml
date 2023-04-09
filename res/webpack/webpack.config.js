@@ -15,6 +15,7 @@ let generalConfig =  {
   stats: { children: true },
   module: {
     rules: [
+      //loaders.TSLoader,
       loaders.CSSLoader,
       loaders.FileLoader,
     ]
@@ -30,6 +31,7 @@ let generalConfig =  {
     plugins.StyleLintPlugin,
     new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     plugins.MiniCssExtractPlugin,
+    plugins.GoGenHTMLWebpackPlugin,
   ],
   cache: {
     type: 'filesystem'

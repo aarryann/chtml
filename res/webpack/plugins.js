@@ -4,6 +4,8 @@ const _StyleLintPlugin = require('stylelint-webpack-plugin');
 const _ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const _HtmlWebpackPlugin = require('html-webpack-plugin');
+const _GoGenHTMLWebpackPlugin = require('../scripts/GoGenHTMLWebpackPlugin');
+
 const entryComponents = require('./entry.config');
 //const _TranspilePlugin = require('transpile-webpack-plugin');
 
@@ -25,6 +27,8 @@ const StyleLintPlugin = new _StyleLintPlugin({
   context: path.resolve(__dirname, '../../src/css'),
   files: '**/*.css',
 });
+
+const GoGenHTMLWebpackPlugin = new _GoGenHTMLWebpackPlugin();
 
 const HtmlWebpackPlugin = entryComponents.browserEntry.reduce((entries, item) => {
   if(item.html){
@@ -53,5 +57,6 @@ module.exports = {
   StyleLintPlugin: StyleLintPlugin,
   ESLintPlugin: ESLintPlugin,
   HtmlWebpackPlugin: HtmlWebpackPlugin,
+  GoGenHTMLWebpackPlugin: GoGenHTMLWebpackPlugin,
   //TranspilePlugin: TranspilePlugin,
 };
