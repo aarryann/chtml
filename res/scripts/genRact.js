@@ -13,5 +13,8 @@ switch (args){
     regen = true;
   case "":
   default:
-    buildRact({build: {regen, srcPath: './src', outPath: './src',}});
+    buildRact({
+      build: {regen, srcPath: './src', outPath: './src', outExtn: 'ract.ts'}, 
+      template: {tplSrc: './res/scripts/ract.template.txt'}
+    });
 }

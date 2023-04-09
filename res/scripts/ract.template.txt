@@ -1,16 +1,18 @@
-export function <!--{ractkey}-->(data, decorator) {
+export function <!--{ractkey}-->(data: Array<any>, decorator: Object) {
   <!--{ractkey}-->AddData(data, decorator);
 }
 
-function <!--{ractkey}-->AddData(data, decorator) {
+function <!--{ractkey}-->AddData(data: Array<any>, decorator: any) {
   const container = document.querySelector('[data-ract-container="<!--{ractkey}-->"]');
-  const template = document.querySelector(
+  const template = <HTMLTemplateElement>document.querySelector(
     'template[data-ract-template="<!--{ractkey}-->"]'
   );
+
+  if (!container || !template) return;
   let clone, rootNode;
 
   data.forEach((row) => {
-    clone = template.content.cloneNode(true);
+    clone = <HTMLElement>template.content.cloneNode(true);
     rootNode = clone.children[0];
     let 
     <!--{#each items}-->

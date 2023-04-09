@@ -18,8 +18,9 @@ const buildRact = (options = siteoptions || {}) => {
   log.info('Building ract...');
   const startTime = process.hrtime();
 
-  const { build: {srcPath, outPath, regen}} = {
+  const { build: {srcPath, outPath, regen, outExtn}, template: {tplSrc}} = {
     build: Object.assign({}, siteoptions.build, options.build),
+    template: Object.assign({}, siteoptions.template, options.template),
   };
   
   // read all pages
@@ -29,7 +30,7 @@ const buildRact = (options = siteoptions || {}) => {
   });
 
   files.forEach(file =>
-    _buildPage(file, { srcPath, outPath, regen })
+    _buildPage(file, { srcPath, outPath, regen, outExtn, tplSrc })
   );
 
   // display build time
@@ -41,10 +42,10 @@ const buildRact = (options = siteoptions || {}) => {
 /**
  * Build a single page
  */
-const _buildPage = (file, { srcPath, outPath, regen }) => {
+const _buildPage = (file, { srcPath, outPath, regen, outExtn, tplSrc }) => {
   const fileData = path.parse(file);
   const sourceFilePath = `${srcPath}/pages/${file}`;
-  const destFilePath = `${outPath}/pages/${fileData.dir}/${fileData.name}.ract.js`;
+  const destFilePath = `${outPath}/pages/${fileData.dir}/${fileData.name}.${outExtn}`;
 
   const srcMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
   const outputExists = fse.existsSync(destFilePath);
@@ -65,8 +66,14 @@ const _buildPage = (file, { srcPath, outPath, regen }) => {
   }
 
   let clone, child, key, keyFound = false, tplAttr, tAtt;
+  let pageContent = "", tplContent, parser = getPrettierParser(outExtn);
 
-  let pageContent = "";
+  try {
+    tplContent = fse.readFileSync(tplSrc, 'utf-8');
+  } catch (e) {
+    throw `Error loading template - ${e.message}`;
+  }
+
   tplArr.forEach(tpl=>{
     key = "";
     keyFound = false;
@@ -82,19 +89,34 @@ const _buildPage = (file, { srcPath, outPath, regen }) => {
     if(!keyFound) return;
     clone = tpl.content.cloneNode(true);
     child = clone.children[0];
-    //pageContent += getFunc(child, key);
-    pageContent += codeGen(child, key);
+    pageContent += codeGen(child, key, tplContent);
   })
   if(pageContent.length === 0) return;
 
   log.info(`building ract - ${file}...`);
-  pageContent = prettier.format(pageContent, { parser: 'babel' });
+  pageContent = prettier.format(pageContent, { parser});
 
   fse.writeFileSync(`${destFilePath}`, pageContent);
 };
 
-function codeGen(node, key){
-  const templateFilePath = `./res/scripts/ract.template.txt`;
+function getPrettierParser(outExtn){
+  const ext = outExtn.trim('.').split(/\./).slice(-1)[0];
+  let parser = "html";
+  switch (ext){
+    case "js":
+      parser = "babel";
+      break;
+    case "ts":
+      parser = "typescript";
+      break;
+    case "html":
+    default:
+      parser = "html";
+  }
+  return parser;
+}
+
+function codeGen(node, key, tplContent){
   let codeScript = "", dataFields = new Set();
   const setterCode = generateSetterCode(node, dataFields);
 
@@ -104,45 +126,7 @@ function codeGen(node, key){
     setterCode
   }
 
-  try {
-    const tpl = fse.readFileSync(templateFilePath, 'utf-8');
-    codeScript = hct.render(tpl, context);
-  } catch (e) {
-    codeScript = `Error loading template - ${e.message}`;
-  }
-
-  return codeScript;
-}
-
-function getFunc(node, key){
-  let codeScript = "", dataFields = new Set();
-  const setterCode = generateSetterCode(node, dataFields);
-
-  for (const key of dataFields) {
-    // Do something with object[key]
-    codeScript += `  ${key} = row["${key}"], \n`;
-  }
-
-  codeScript = 
-   (`let${codeScript};`).replace(", \n;", ";\n\n") + setterCode;
-  
-  codeScript = 
-  `export function ${key}(data, decorator) {
-    ${key}AddData(data, decorator);
-  }
-  function ${key}AddData(data, decorator) {
-    const container = document.querySelector('[${ractTag}container="${key}"]');
-    const template = document.querySelector('template[${ractTag}template="${key}"]');
-    let clone, rootNode;
-
-    data.forEach(row => {
-      clone = template.content.cloneNode(true);
-      rootNode = clone.children[0];
-      ${codeScript}
-
-      container.appendChild(rootNode);
-    });
-  }`;
+  codeScript = hct.render(tplContent, context);
 
   return codeScript;
 }

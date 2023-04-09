@@ -7,10 +7,8 @@ const frontMatter = require('front-matter');
 const glob = require('glob');
 const log = require('./logger');
 const siteoptions = require('../conf/site.config');
-const { encrypt, decrypt } = require('./crypto');
-const secretKey = process.env.SECRET1;
-let buildMode = process.env.BUILDMODE;
-const gen = process.env.BUILDFILE;
+//let buildMode = process.env.BUILDMODE;
+
 /**
  * Build the site
  */
@@ -18,12 +16,12 @@ const build = (options = siteoptions || {}) => {
   log.info('Building gen...');
   const startTime = process.hrtime();
 
-  const { build: {srcPath, outPath, regen, cleanUrls, includefiles, excludefiles}, site 
+  const { build: {srcPath, outPath, regen, cleanUrls, outExtn}, site 
     , template: {delimiter} } 
     = {
       build: Object.assign({}, siteoptions.build, options.build),
       site: Object.assign({}, siteoptions.site, options.site),
-      template: Object.assign({}, siteoptions.template, options.template)
+      template: Object.assign({}, siteoptions.template, options.template),
     };
   
   // clear destination folder when REGEN
@@ -47,7 +45,7 @@ const build = (options = siteoptions || {}) => {
 
   files.forEach(
     file =>
-      _buildPage(file, { srcPath, outPath, cleanUrls, site, delimiter })
+      _buildPage(file, { srcPath, outPath, cleanUrls, site, delimiter, regen, outExtn })
   );
 
   // display build time
@@ -99,7 +97,7 @@ function _copyFolderRecursive(sourceDir, destDir) {
 /**
  * Build a single page
  */
-const _buildPage = (file, { srcPath, outPath, cleanUrls, site, delimiter, regen }) => {
+const _buildPage = (file, { srcPath, outPath, cleanUrls, site, delimiter, regen, outExtn }) => {
   const fileData = path.parse(file);
   // render complete page as well as page fragment for full loading vs partial (htmx) loading
   const pluginDir = fileData.dir.split('/')[0];

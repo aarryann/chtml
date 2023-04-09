@@ -5,10 +5,13 @@ module.exports = {
     includefiles: [],
     excludefiles: [],
     regen: false,
-    cleanUrls: true
+    cleanUrls: true,
+    outExtn: 'html',
   },
   template:{
-    delimiter: '?'
+    delimiter: '%',
+    tplSrc: '',
+    parser: 'html',
   },
   site: {
     title: 'GO'

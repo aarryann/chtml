@@ -13,5 +13,8 @@ switch (args){
     regen = true;
   case "":
   default:
-    buildHTML({build: {regen, srcPath: './src', outPath: './gen',}});
+    buildHTML({
+      build: {regen, srcPath: './src', outPath: './gen', outExtn: 'html'}, 
+      template: {delimiter: '?'}
+    });
 }

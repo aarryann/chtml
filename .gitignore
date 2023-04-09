@@ -1,6 +1,7 @@
 *.swp
 .env
 *.ract.js
+*.ract.ts
 dist
 gen
 node
