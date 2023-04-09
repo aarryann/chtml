@@ -13,6 +13,9 @@
     "gen:html": "node res/scripts/genHTML.js",
     "gen:ract": "node res/scripts/genRact.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npm-run-all --parallel watch:ts-app watch:ts-server watch:wp",
+    "watch:ts-app": "tsc -w -p tsconfig.app.json",
+    "watch:ts-server": "tsc -w -p tsconfig.server.json",
     "watch:wp": "webpack --watch --config=res/webpack/webpack.config.js  --mode=development"
   },
   "dependencies": {
@@ -22,7 +25,6 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^5.0.0",
     "@types/jsdom": "^21.1.0",
     "@types/node": "^18.15.3",
     "clean-webpack-plugin": "^4.0.0",
@@ -39,6 +41,7 @@
     "marked": "^4.3.0",
     "mini-css-extract-plugin": "^2.7.5",
     "nodemon": "^2.0.21",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.1.0",
