@@ -76,7 +76,6 @@ function parse(template: string | undefined, context: any) : string {
       // Get the array to iterate over from the context object
       const array = context[arrayKey];
       // Render the item template for each item in the array
-      console.log(array);
       const renderedItems = array.map((item: string) => {
         // Create a new context object for each item
         const itemContext = Object.assign({}, context, { this: item });
