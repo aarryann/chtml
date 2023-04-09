@@ -9,6 +9,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const ractTag = 'data-ract-';
 const prettier = require("prettier");
+const hct = require("../../dist/hct");
 
 /**
  * Build the site
@@ -17,10 +18,9 @@ const buildRact = (options = siteoptions || {}) => {
   log.info('Building ract...');
   const startTime = process.hrtime();
 
-  const { build: {srcPath, outPath, regen}} 
-    = {
-      build: Object.assign({}, siteoptions.build, options.build),
-    };
+  const { build: {srcPath, outPath, regen}} = {
+    build: Object.assign({}, siteoptions.build, options.build),
+  };
   
   // read all pages
   const files = glob.sync('**/*.@(ejs|html)', {
@@ -46,11 +46,11 @@ const _buildPage = (file, { srcPath, outPath, regen }) => {
   const sourceFilePath = `${srcPath}/pages/${file}`;
   const destFilePath = `${outPath}/pages/${fileData.dir}/${fileData.name}.ract.js`;
 
-  const templateMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
+  const srcMtimeMs = fse.statSync(sourceFilePath).mtimeMs;
   const outputExists = fse.existsSync(destFilePath);
   const outputMtimeMs = outputExists ? fse.statSync(destFilePath).mtimeMs : 0;
 
-  if (!regen && templateMtimeMs <= outputMtimeMs) {
+  if (!regen && srcMtimeMs <= outputMtimeMs) {
     log.info(`skipping ract - ${file}...`);
     return;
   }
@@ -82,7 +82,8 @@ const _buildPage = (file, { srcPath, outPath, regen }) => {
     if(!keyFound) return;
     clone = tpl.content.cloneNode(true);
     child = clone.children[0];
-    pageContent += getFunc(child, key);
+    //pageContent += getFunc(child, key);
+    pageContent += codeGen(child, key);
   })
   if(pageContent.length === 0) return;
 
@@ -91,6 +92,27 @@ const _buildPage = (file, { srcPath, outPath, regen }) => {
 
   fse.writeFileSync(`${destFilePath}`, pageContent);
 };
+
+function codeGen(node, key){
+  const templateFilePath = `./res/scripts/ract.template.txt`;
+  let codeScript = "", dataFields = new Set();
+  const setterCode = generateSetterCode(node, dataFields);
+
+  const context = {
+    ractkey: key,
+    items: Array.from(dataFields),
+    setterCode
+  }
+
+  try {
+    const tpl = fse.readFileSync(templateFilePath, 'utf-8');
+    codeScript = hct.render(tpl, context);
+  } catch (e) {
+    codeScript = `Error loading template - ${e.message}`;
+  }
+
+  return codeScript;
+}
 
 function getFunc(node, key){
   let codeScript = "", dataFields = new Set();

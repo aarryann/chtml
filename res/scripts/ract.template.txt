@@ -14,9 +14,9 @@ function <!--{ractkey}-->AddData(data, decorator) {
     rootNode = clone.children[0];
     let 
     <!--{#each items}-->
-      <!--{item.id}--> = row["<!--{item.id}-->"],
+      <!--{this}--> = row["<!--{this}-->"],
     <!--{/each}-->
-    ;
+    dummy = true;
 
     <!--{setterCode}-->
 
