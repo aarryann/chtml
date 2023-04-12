@@ -5,6 +5,7 @@ const _ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const _HtmlWebpackPlugin = require('html-webpack-plugin');
 const _GoGenHTMLWebpackPlugin = require('../scripts/GoGenHTMLWebpackPlugin');
+const _CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const entryComponents = require('./entry.config');
 //const _TranspilePlugin = require('transpile-webpack-plugin');
@@ -12,7 +13,7 @@ const entryComponents = require('./entry.config');
 const isProd = process.argv.indexOf('--mode=production') >= 0;
 
 const MiniCssExtractPlugin = new _MiniCssExtractPlugin({
-  filename: '[name].bundle.css',
+  filename: 'assets/css/[name].bundle.css',
   chunkFilename: '[id].css'
 });
 
@@ -26,6 +27,12 @@ const StyleLintPlugin = new _StyleLintPlugin({
   configFile: path.resolve(__dirname, './stylelint.config.js'),
   context: path.resolve(__dirname, '../../src/css'),
   files: '**/*.css',
+});
+
+const CopyWebpackPlugin = new _CopyWebpackPlugin({
+  patterns: [
+    { from: "src/assets", to: "assets" },
+  ],
 });
 
 const GoGenHTMLWebpackPlugin = new _GoGenHTMLWebpackPlugin();
@@ -59,4 +66,5 @@ module.exports = {
   HtmlWebpackPlugin: HtmlWebpackPlugin,
   GoGenHTMLWebpackPlugin: GoGenHTMLWebpackPlugin,
   //TranspilePlugin: TranspilePlugin,
+  CopyWebpackPlugin: CopyWebpackPlugin,
 };

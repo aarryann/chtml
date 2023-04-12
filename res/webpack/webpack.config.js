@@ -15,7 +15,7 @@ let generalConfig =  {
   stats: { children: true },
   module: {
     rules: [
-      //loaders.TSLoader,
+      loaders.TSLoader,
       loaders.CSSLoader,
       loaders.FileLoader,
     ]

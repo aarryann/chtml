@@ -9,7 +9,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const ractTag = 'data-ract-';
 const prettier = require("prettier");
-const hct = require("../../dist/hct");
+const hct = require("./hct");
 
 /**
  * Build the site

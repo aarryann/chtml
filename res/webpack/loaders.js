@@ -6,7 +6,7 @@ const TSLoader = {
   use: [{
     loader: 'ts-loader',
     options: {
-      configFile: "../../tsconfig.node.json"
+      configFile: "tsconfig.app.json"
     }
   }],
   exclude: /node_modules/,

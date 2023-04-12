@@ -5,25 +5,33 @@
   "main": "server.js",
   "watch": {
     "gen:html": {
-      "patterns": ["src/pages"],
+      "patterns": [
+        "src/pages"
+      ],
       "extensions": "html,ejs"
     },
     "gen:ract": {
-      "patterns": ["src/pages"],
+      "patterns": [
+        "src/pages"
+      ],
       "extensions": "html,ejs"
     },
     "build:ts": {
-      "patterns": ["src,server"],
+      "patterns": [
+        "src,server"
+      ],
       "extensions": "ts,js"
     },
     "build:wp": {
-      "patterns": ["dist,src"]
+      "patterns": [
+        "dist,src"
+      ]
     }
   },
   "scripts": {
     "start": "npm run build && node dist/server/index.js",
     "dev": "npm run build && nodemon -w dist -w public dist/server/index.js",
-    "build": "npm run build:ts && npm run build:wp && npm run build:assets",
+    "build": "npm run build:ts && npm run build:wp",
     "build:tw": "postcss styles/tailwind.css -o public/assets/css/tailwind.css",
     "build:ts": "node res/scripts/genRact.js f && tsc -p tsconfig.server.json && tsc -p tsconfig.app.json",
     "build:wp": "webpack --config=res/webpack/webpack.config.js --mode=development",
@@ -45,6 +53,7 @@
     "@types/jsdom": "^21.1.0",
     "@types/node": "^18.15.3",
     "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "cssnano": "^5.1.15",
     "ejs": "^3.1.9",

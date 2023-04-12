@@ -2,19 +2,19 @@
 const browserEntry = [
   {
     "handle": "main",
-    "js": ["/dist/pages/index.home"], 
+    "js": ["/src/pages/index.home"], 
     "dependencies": [],
     "html": "/index.html"
   },
   {
     "handle": "feeds", 
-    "js": "/dist/pages/feed/index.feed", 
+    "js": "/src/pages/feed/index.feed", 
     "dependencies": [],
     "html": "/feed/index.html"
   },
   {
     "handle": "about", 
-    "js": "/dist/pages/about/index.about", 
+    "js": "/src/pages/about/index.about", 
     "dependencies": [],
     "html": "/about/index.html"
   },

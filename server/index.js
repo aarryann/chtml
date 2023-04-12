@@ -1,5 +1,5 @@
 const express = require("express");
-const hct = require("../hct");
+const hct = require("./hct");
 const fs = require("fs");
 const app = express();
 const path = require('path');

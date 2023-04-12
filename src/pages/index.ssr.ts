@@ -1,4 +1,4 @@
-const home = require("./index.home");
+const home = require("../pages/index.home");
 const jsdom = require("jsdom");
 
 export const context = {
